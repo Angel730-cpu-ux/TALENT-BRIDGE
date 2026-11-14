@@ -1,0 +1,780 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Discover Talent | Talent Bridge</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    /* TALENT PAGE - PICTURELESS DESIGN */
+
+    .talent-page {
+      overflow: hidden;
+    }
+
+    .talent-page .talent-hero {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .talent-page .talent-hero-visual {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 350px;
+      padding: 25px;
+    }
+
+    .talent-orbit {
+      width: min(100%, 390px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background:
+        radial-gradient(circle, rgba(120, 65, 255, .22), transparent 58%);
+      border: 1px solid rgba(157, 119, 255, .22);
+      box-shadow:
+        0 0 70px rgba(116, 63, 255, .15),
+        inset 0 0 55px rgba(35, 210, 255, .07);
+    }
+
+    .talent-orbit::before,
+    .talent-orbit::after {
+      content: "";
+      position: absolute;
+      inset: 12%;
+      border: 1px solid rgba(70, 218, 255, .23);
+      border-radius: 50%;
+      animation: talentOrbit 18s linear infinite;
+    }
+
+    .talent-orbit::after {
+      inset: 25%;
+      border-color: rgba(173, 113, 255, .35);
+      animation-direction: reverse;
+      animation-duration: 12s;
+    }
+
+    @keyframes talentOrbit {
+      to { transform: rotate(360deg); }
+    }
+
+    .talent-center {
+      width: 145px;
+      height: 145px;
+      border-radius: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      background: linear-gradient(145deg, #8b5cf6, #4f46e5 55%, #06b6d4);
+      box-shadow: 0 0 55px rgba(139, 92, 246, .42);
+      transform: rotate(-7deg);
+      z-index: 2;
+    }
+
+    .talent-center strong {
+      color: white;
+      font-size: 42px;
+      letter-spacing: -3px;
+    }
+
+    .talent-center span {
+      color: white;
+      font-size: 10px;
+      letter-spacing: 3px;
+      font-weight: 800;
+    }
+
+    .orbit-label {
+      position: absolute;
+      z-index: 3;
+      padding: 10px 14px;
+      border: 1px solid rgba(255,255,255,.13);
+      background: rgba(15, 17, 40, .92);
+      backdrop-filter: blur(12px);
+      color: #f4f1ff;
+      border-radius: 14px;
+      font-size: 12px;
+      font-weight: 700;
+      box-shadow: 0 10px 35px rgba(0,0,0,.25);
+    }
+
+    .orbit-label.one {
+      top: 14%;
+      left: 0;
+    }
+
+    .orbit-label.two {
+      top: 24%;
+      right: -2%;
+    }
+
+    .orbit-label.three {
+      bottom: 17%;
+      left: 3%;
+    }
+
+    .orbit-label.four {
+      bottom: 12%;
+      right: 0;
+    }
+
+    .talent-page .talent-card-photo {
+      width: 66px;
+      height: 66px;
+      min-width: 66px;
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 850;
+      letter-spacing: -1px;
+      color: white;
+      background: linear-gradient(135deg, #8b5cf6, #4f46e5, #06b6d4);
+      box-shadow: 0 8px 28px rgba(111, 74, 255, .24);
+      border: 1px solid rgba(255,255,255,.2);
+    }
+
+    .talent-page .avatar-purple {
+      background: linear-gradient(135deg, #a855f7, #6d28d9);
+    }
+
+    .talent-page .avatar-cyan {
+      background: linear-gradient(135deg, #06b6d4, #2563eb);
+    }
+
+    .talent-page .avatar-pink {
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    }
+
+    .talent-page .avatar-blue {
+      background: linear-gradient(135deg, #3b82f6, #4338ca);
+    }
+
+    .talent-page .avatar-orange {
+      background: linear-gradient(135deg, #f97316, #db2777);
+    }
+
+    .talent-page .avatar-green {
+      background: linear-gradient(135deg, #10b981, #0891b2);
+    }
+
+    .talent-page .talent-card {
+      transition: transform .3s ease, border-color .3s ease,
+                  box-shadow .3s ease;
+    }
+
+    .talent-page .talent-card:hover {
+      transform: translateY(-7px);
+      border-color: rgba(139, 92, 246, .65);
+      box-shadow: 0 20px 55px rgba(85, 54, 190, .18);
+    }
+
+    .talent-page .talent-card-body {
+      min-width: 0;
+    }
+
+    .talent-page .talent-card h3 {
+      overflow-wrap: anywhere;
+    }
+
+    .talent-page .talent-skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin: 15px 0;
+    }
+
+    .talent-page .talent-skills span {
+      padding: 6px 9px;
+      border-radius: 9px;
+      font-size: 11px;
+      color: #d9d4ff;
+      background: rgba(139, 92, 246, .12);
+      border: 1px solid rgba(139, 92, 246, .2);
+    }
+
+    .talent-page .talent-profile-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      margin-top: 10px;
+      color: #b9a3ff;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .talent-page .talent-profile-link:hover {
+      color: #67e8f9;
+    }
+
+    .talent-page .talent-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #86efac;
+      margin-bottom: 8px;
+    }
+
+    .talent-page .talent-status::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #4ade80;
+      box-shadow: 0 0 10px rgba(74, 222, 128, .6);
+    }
+
+    .talent-page .talent-filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .talent-page .talent-filter-row input,
+    .talent-page .talent-filter-row select {
+      min-width: 0;
+      padding: 13px 15px;
+      border-radius: 12px;
+      color: #f5f3ff;
+      background: rgba(255,255,255,.045);
+      border: 1px solid rgba(255,255,255,.13);
+      outline: none;
+    }
+
+    .talent-page .talent-filter-row input {
+      flex: 1 1 220px;
+    }
+
+    .talent-page .talent-filter-row select {
+      flex: 0 1 190px;
+    }
+
+    .talent-page .talent-filter-row option {
+      color: #17152a;
+    }
+
+    .talent-page .talent-card[hidden] {
+      display: none !important;
+    }
+
+    .talent-page .talent-empty {
+      display: none;
+      padding: 30px 10px;
+      color: #b8b3d1;
+      text-align: center;
+    }
+
+    @media (max-width: 600px) {
+      .talent-page .talent-hero-visual {
+        min-height: 290px;
+        padding: 20px 8px;
+      }
+
+      .talent-orbit {
+        width: min(100%, 300px);
+      }
+
+      .talent-center {
+        width: 115px;
+        height: 115px;
+        border-radius: 30px;
+      }
+
+      .talent-center strong {
+        font-size: 34px;
+      }
+
+      .orbit-label {
+        font-size: 10px;
+        padding: 8px 10px;
+      }
+
+      .talent-page .talent-filter-row select {
+        flex: 1 1 130px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .talent-orbit::before,
+      .talent-orbit::after {
+        animation: none;
+      }
+    }
+  </style>
+</head>
+
+<body class="talent-page">
+
+  <!-- NAVIGATION -->
+  <nav class="talent-nav">
+    <a href="index.html" class="talent-logo">
+      <span class="logo-mark">TB</span>
+      <span>Talent<span class="logo-highlight">Bridge</span></span>
+    </a>
+
+    <div class="talent-nav-links">
+      <a href="path.html">Find Your Path</a>
+      <a href="courses.html">Courses</a>
+      <a href="opportunities.html">Opportunities</a>
+      <a href="talent.html" class="active">Talent</a>
+      <a href="companies.html">For Companies</a>
+    </div>
+
+    <a href="path.html" class="talent-nav-cta">Get Started ↗</a>
+  </nav>
+
+
+  <!-- HERO SECTION -->
+  <header class="talent-hero">
+    <div class="talent-hero-copy">
+      <span class="talent-eyebrow">✦ THE FUTURE IS FULL OF TALENT</span>
+
+      <h1>
+        Meet the talent
+        <span>shaping tomorrow.</span>
+      </h1>
+
+      <p>
+        Discover emerging professionals, explore their skills, and connect
+        with the people who can turn your next big idea into reality.
+      </p>
+
+      <div class="talent-hero-actions">
+        <a href="#discover-talent" class="talent-primary-btn">
+          Explore Talent <span>↗</span>
+        </a>
+
+        <a href="path.html" class="talent-secondary-btn">
+          Build Your Skills
+        </a>
+      </div>
+
+      <div class="talent-hero-note">
+        <span>✦</span> Skills. Opportunity. Global connections.
+      </div>
+    </div>
+
+    <div class="talent-hero-visual">
+      <div class="talent-orbit">
+        <div class="talent-center">
+          <strong>TB</strong>
+          <span>TALENT BRIDGE</span>
+        </div>
+
+        <div class="orbit-label one">✦ Developers</div>
+        <div class="orbit-label two">✧ Designers</div>
+        <div class="orbit-label three">⌘ Creators</div>
+        <div class="orbit-label four">↗ Innovators</div>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- DISCOVER TALENT -->
+  <main>
+    <section class="talent-section" id="discover-talent">
+      <div class="talent-section-heading">
+        <div>
+          <span class="talent-eyebrow">YOUR NEXT CONNECTION STARTS HERE</span>
+          <h2>Discover exceptional <span>talent.</span></h2>
+          <p>
+            Explore sample profiles showcasing the skills and potential
+            of tomorrow's professionals.
+          </p>
+        </div>
+
+        <div class="talent-count">
+          <strong>08</strong>
+          <span>Sample profiles</span>
+        </div>
+      </div>
+
+      <!-- SEARCH AND FILTERS -->
+      <div class="talent-search-panel">
+        <div class="talent-filter-row">
+          <input
+            type="search"
+            id="talentSearch"
+            placeholder="⌕  Search skills, names or roles..."
+            aria-label="Search talent"
+          >
+
+          <select id="talentCategory" aria-label="Filter by profession">
+            <option value="all">All categories</option>
+            <option value="development">Development</option>
+            <option value="design">Design</option>
+            <option value="marketing">Marketing</option>
+            <option value="content">Content & Media</option>
+          </select>
+
+          <select id="talentAvailability" aria-label="Filter by availability">
+            <option value="all">All availability</option>
+            <option value="available">Available for projects</option>
+          </select>
+        </div>
+      </div>
+
+
+      <!-- TALENT CARDS -->
+      <div class="talent-grid" id="talentGrid">
+
+        <!-- PROFILE 1 -->
+        <article class="talent-card"
+          data-category="development"
+          data-availability="available"
+          data-search="amara okafor frontend developer html css javascript react development">
+
+          <div class="talent-card-top">
+            <div class="talent-card-photo avatar-purple">AO</div>
+            <span class="talent-tag">Development</span>
+          </div>
+
+          <div class="talent-card-body">
+            <span class="talent-status">Open to projects</span>
+            <h3>Amara Okafor</h3>
+            <p class="talent-role">Frontend Developer</p>
+
+            <p class="talent-location">⌖ Lagos, Nigeria</p>
+
+            <div class="talent-skills">
+              <span>HTML & CSS</span>
+              <span>JavaScript</span>
+              <span>React</span>
+            </div>
+
+            <a href="path.html" class="talent-profile-link">
+              Explore opportunities ↗
+            </a>
+          </div>
+        </article>
+
+
+        <!-- PROFILE 2 -->
+        <article class="talent-card"
+          data-category="design"
+          data-availability="available"
+          data-search="zara adebayo ui ux product designer figma prototyping design">
+
+          <div class="talent-card-top">
+            <div class="talent-card-photo avatar-pink">ZA</div>
+            <span class="talent-tag">Design</span>
+          </div>
+
+          <div class="talent-card-body">
+            <span class="talent-status">Open to projects</span>
+            <h3>Zara Adebayo</h3>
+            <p class="talent-role">UI/UX & Product Designer</p>
+
+            <p class="talent-location">⌖ Abuja, Nigeria</p>
+
+            <div class="talent-skills">
+              <span>Figma</span>
+              <span>UI/UX</span>
+              <span>Prototyping</span>
+            </div>
+
+            <a href="path.html" class="talent-profile-link">
+              Explore opportunities ↗
+            </a>
+          </div>
+        </article>
+
+
+        <!-- PROFILE 3 -->
+        <article class="talent-card"
+          data-category="development"
+          data-availability="available"
+          data-search="tobi adewale software developer python backend apis databases">
+
+          <div class="talent-card-top">
+            <div class="talent-card-photo avatar-cyan">TA</div>
+            <span class="talent-tag">Development</span>
+          </div>
+
+          <div class="talent-card-body">
+            <span class="talent-status">Open to projects</span>
+            <h3>Tobi Adewale</h3>
+            <p class="talent-role">Software Developer</p>
+
+            <p class="talent-location">⌖ Ibadan, Nigeria</p>
+
+            <div class="talent-skills">
+              <span>Python</span>
+              <span>APIs</span>
+              <span>Databases</span>
+            </div>
+
+            <a href="path.html" class="talent-profile-link">
+              Explore opportunities ↗
+            </a>
+          </div>
+        </article>
+
+
+        <!-- PROFILE 4 -->
+        <article class="talent-card"
+          data-category="marketing"
+          data-availability="available"
+          data-search="nana mensah digital marketing strategist seo social media analytics">
+
+          <div class="talent-card-top">
+            <div class="talent-card-photo avatar-orange">NM</div>
+            <span class="talent-tag">Marketing</span>
+          </div>
+
+          <div class="talent-card-body">
+            <span class="talent-status">Open to projects</span>
+            <h3>Nana Mensah</h3>
+            <p class="talent-role">Digital Marketing Strategist</p>
+
+            <p class="talent-location">⌖ Accra, Ghana</p>
+
+            <div class="talent-skills">
+              <span>SEO</span>
+              <span>Social Media</span>
+              <span>Analytics</span>
+            </div>
+
+            <a href="path.html" class="talent-profile-link">
+              Explore opportunities ↗
+            </a>
+          </div>
+        </article>
+
+
+        <!-- PROFILE 5 -->
+        <article class="talent-card"
+          data-category="content"
+          data-availability="available"
+          data-search="adaeze obi content writer copywriting storytelling editing content">
+
+          <div class="talent-card-top">
+            <div class="talent-card-photo avatar-blue">AO</div>
+            <span class="talent-tag">Content</span>
+          </div>
+
+          <div class="talent-card-body">
+            <span class="talent-status">Open to projects</span>
+            <h3>Adaeze Obi</h3>
+            <p class="talent-role">Content Writer</p>
+
+            <p class="talent-location">⌖ Enugu, Nigeria</p>
+
+            <div class="talent-skills">
+              <span>Copywriting</span>
+              <span>Storytelling</span>
+              <span>Editing</span>
+            </div>
+
+            <a href="path.html" class="talent-profile-link">
+              Explore opportunities ↗
+            </a>
+          </div>
+        </article>
+
+
+        <!-- PROFILE 6 -->
+        <article class="talent-card"
+          data-category="content"
+          data-availability="available"
+          data-search="kofi asare video editor video editing motion graphics storytelling">
+
+          <div class="talent-card-top">
+            <div class="talent-card-photo avatar-green">KA</div>
+            <span class="talent-tag">Content & Media</span>
+          </div>
+
+          <div class="talent-card-body">
+            <span class="talent-status">Open to projects</span>
+            <h3>Kofi Asare</h3>
+            <p class="talent-role">Video Editor</p>
+
+            <p class="talent-location">⌖ Kumasi, Ghana</p>
+
+            <div class="talent-skills">
+              <span>Video Editing</span>
+              <span>Motion Graphics</span>
+              <span>Storytelling</span>
+            </div>
+
+            <a href="path.html" class="talent-profile-link">
+              Explore opportunities ↗
+            </a>
+          </div>
+        </article>
+
+
+        <!-- PROFILE 7 -->
+        <article class="talent-card"
+          data-category="design"
+          data-availability="available"
+          data-search="chioma eze graphic brand designer branding typography illustration">
+
+          <div class="talent-card-top">
+            <div class="talent-card-photo avatar-pink">CE</div>
+            <span class="talent-tag">Design</span>
+          </div>
+
+          <div class="talent-card-body">
+            <span class="talent-status">Open to projects</span>
+            <h3>Chioma Eze</h3>
+            <p class="talent-role">Graphic & Brand Designer</p>
+
+            <p class="talent-location">⌖ Port Harcourt, Nigeria</p>
+
+            <div class="talent-skills">
+              <span>Branding</span>
+              <span>Typography</span>
+              <span>Illustration</span>
+            </div>
+
+            <a href="path.html" class="talent-profile-link">
+              Explore opportunities ↗
+            </a>
+          </div>
+        </article>
+
+
+        <!-- PROFILE 8 -->
+        <article class="talent-card"
+          data-category="marketing"
+          data-availability="available"
+          data-search="kwame boateng growth marketing specialist strategy conversion research analytics">
+
+          <div class="talent-card-top">
+            <div class="talent-card-photo avatar-cyan">KB</div>
+            <span class="talent-tag">Marketing</span>
+          </div>
+
+          <div class="talent-card-body">
+            <span class="talent-status">Open to projects</span>
+            <h3>Kwame Boateng</h3>
+            <p class="talent-role">Growth Marketing Specialist</p>
+
+            <p class="talent-location">⌖ Accra, Ghana</p>
+
+            <div class="talent-skills">
+              <span>Strategy</span>
+              <span>Conversion</span>
+              <span>Analytics</span>
+            </div>
+
+            <a href="path.html" class="talent-profile-link">
+              Explore opportunities ↗
+            </a>
+          </div>
+        </article>
+
+      </div>
+
+      <p class="talent-empty" id="talentEmpty">
+        No matching profiles found. Try another search.
+      </p>
+
+      <p class="talent-disclaimer">
+        These are illustrative sample profiles for the website design.
+        They are not verified Talent Bridge members.
+      </p>
+    </section>
+
+
+    <!-- CTA SECTION -->
+    <section class="talent-cta-banner">
+      <div>
+        <span class="talent-eyebrow">YOUR NEXT CHAPTER STARTS HERE</span>
+        <h2>Your talent deserves a bigger stage.</h2>
+        <p>
+          Build your skills, discover opportunities, and take your next step
+          toward a global future.
+        </p>
+      </div>
+
+      <a href="path.html" class="talent-primary-btn">
+        Find Your Path ↗
+      </a>
+    </section>
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer class="talent-footer">
+    <a href="index.html" class="talent-logo">
+      <span class="logo-mark">TB</span>
+      <span>Talent<span class="logo-highlight">Bridge</span></span>
+    </a>
+
+    <p>Connecting African talent to global opportunity.</p>
+
+    <div class="talent-footer-links">
+      <a href="path.html">Find Your Path</a>
+      <a href="courses.html">Courses</a>
+      <a href="opportunities.html">Opportunities</a>
+      <a href="companies.html">For Companies</a>
+    </div>
+
+    <p class="talent-copyright">
+      © 2026 Talent Bridge. All rights reserved.
+    </p>
+  </footer>
+
+
+  <!-- SEARCH AND FILTER FUNCTIONALITY -->
+  <script>
+    const talentSearch = document.getElementById("talentSearch");
+    const talentCategory = document.getElementById("talentCategory");
+    const talentAvailability = document.getElementById("talentAvailability");
+    const talentCards = document.querySelectorAll(".talent-card");
+    const talentEmpty = document.getElementById("talentEmpty");
+    const talentCount = document.querySelector(".talent-count strong");
+
+    function filterTalent() {
+      const searchTerm = talentSearch.value.toLowerCase().trim();
+      const selectedCategory = talentCategory.value;
+      const selectedAvailability = talentAvailability.value;
+
+      let visibleCount = 0;
+
+      talentCards.forEach(card => {
+        const searchableText = card.dataset.search.toLowerCase();
+        const category = card.dataset.category;
+        const availability = card.dataset.availability;
+
+        const matchesSearch = searchableText.includes(searchTerm);
+        const matchesCategory =
+          selectedCategory === "all" || category === selectedCategory;
+        const matchesAvailability =
+          selectedAvailability === "all" ||
+          availability === selectedAvailability;
+
+        const shouldShow =
+          matchesSearch && matchesCategory && matchesAvailability;
+
+        card.hidden = !shouldShow;
+
+        if (shouldShow) {
+          visibleCount++;
+        }
+      });
+
+      talentEmpty.style.display = visibleCount === 0 ? "block" : "none";
+      talentCount.textContent = String(visibleCount).padStart(2, "0");
+    }
+
+    talentSearch.addEventListener("input", filterTalent);
+    talentCategory.addEventListener("change", filterTalent);
+    talentAvailability.addEventListener("change", filterTalent);
+  </script>
+
+</body>
+</html>

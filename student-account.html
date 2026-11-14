@@ -1,0 +1,378 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Account | Talent Bridge</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #35205e, #100c20 65%);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+    }
+
+    .account-box {
+      width: 100%;
+      max-width: 440px;
+      padding: 35px;
+      border: 1px solid rgba(255,255,255,.13);
+      border-radius: 22px;
+      background: rgba(255,255,255,.07);
+      backdrop-filter: blur(15px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.3);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 25px;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .logo span {
+      color: #a98aff;
+    }
+
+    .intro {
+      text-align: center;
+      color: #c8bfdc;
+      font-size: 14px;
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 25px;
+    }
+
+    .tabs button {
+      flex: 1;
+      padding: 12px;
+      border: 0;
+      border-radius: 9px;
+      background: #302345;
+      color: white;
+      cursor: pointer;
+    }
+
+    .tabs button.active {
+      background: #9365ee;
+    }
+
+    .form-section {
+      display: none;
+    }
+
+    .form-section.active {
+      display: block;
+    }
+
+    .form-section h2 {
+      margin-bottom: 20px;
+      font-size: 23px;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 8px;
+      font-size: 13px;
+      color: #ded5ee;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #594875;
+      border-radius: 9px;
+      background: #171125;
+      color: white;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #a98aff;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      margin-top: 22px;
+      border: 0;
+      border-radius: 9px;
+      background: linear-gradient(100deg, #8252e8, #b16bf0);
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .submit-btn:disabled {
+      opacity: .6;
+      cursor: not-allowed;
+    }
+
+    #message {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 13px;
+      line-height: 1.6;
+      color: #d9c9ff;
+    }
+
+    .back-link {
+      display: block;
+      margin-top: 22px;
+      text-align: center;
+      color: #c6aaff;
+      text-decoration: none;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="account-box">
+
+    <div class="logo">Talent<span>Bridge</span></div>
+
+    <p class="intro">
+      Your learning journey starts here.
+      Create an account or log in to continue.
+    </p>
+
+    <div class="tabs">
+      <button id="signupTab" class="active" type="button">
+        Create Account
+      </button>
+
+      <button id="loginTab" type="button">
+        Log In
+      </button>
+    </div>
+
+    <section id="signupForm" class="form-section active">
+      <h2>Create your account</h2>
+
+      <form id="registerForm">
+
+        <label for="fullName">Full Name</label>
+        <input
+          id="fullName"
+          type="text"
+          autocomplete="name"
+          required
+          placeholder="Enter your full name"
+        >
+
+        <label for="signupEmail">Email Address</label>
+        <input
+          id="signupEmail"
+          type="email"
+          autocomplete="email"
+          required
+          placeholder="Enter your email"
+        >
+
+        <label for="signupPassword">Password</label>
+        <input
+          id="signupPassword"
+          type="password"
+          autocomplete="new-password"
+          minlength="8"
+          required
+          placeholder="At least 8 characters"
+        >
+
+        <button class="submit-btn" type="submit">
+          Create Account →
+        </button>
+
+      </form>
+    </section>
+
+    <section id="loginForm" class="form-section">
+      <h2>Welcome back</h2>
+
+      <form id="studentLoginForm">
+
+        <label for="loginEmail">Email Address</label>
+        <input
+          id="loginEmail"
+          type="email"
+          autocomplete="email"
+          required
+          placeholder="Enter your email"
+        >
+
+        <label for="loginPassword">Password</label>
+        <input
+          id="loginPassword"
+          type="password"
+          autocomplete="current-password"
+          required
+          placeholder="Enter your password"
+        >
+
+        <button class="submit-btn" type="submit">
+          Log In →
+        </button>
+
+      </form>
+    </section>
+
+    <p id="message" role="status" aria-live="polite"></p>
+
+    <a href="courses.html" class="back-link">
+      ← Back to Learning Academy
+    </a>
+
+  </main>
+
+  <script>
+    const SUPABASE_URL =
+      "https://bmfpkaowsqfqekpsyxxd.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_v5uJioRwo5XxyfNOFeWHUQ_03LERwgd";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    const signupTab = document.getElementById("signupTab");
+    const loginTab = document.getElementById("loginTab");
+    const signupForm = document.getElementById("signupForm");
+    const loginForm = document.getElementById("loginForm");
+    const message = document.getElementById("message");
+
+    function showTab(tab) {
+      message.textContent = "";
+
+      signupForm.classList.toggle("active", tab === "signup");
+      loginForm.classList.toggle("active", tab === "login");
+
+      signupTab.classList.toggle("active", tab === "signup");
+      loginTab.classList.toggle("active", tab === "login");
+    }
+
+    signupTab.addEventListener("click", function() {
+      showTab("signup");
+    });
+
+    loginTab.addEventListener("click", function() {
+      showTab("login");
+    });
+
+    // STUDENT REGISTRATION
+    document.getElementById("registerForm")
+      .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const button = this.querySelector("button");
+        button.disabled = true;
+        button.textContent = "Creating account...";
+
+        const fullName =
+          document.getElementById("fullName").value.trim();
+
+        const email =
+          document.getElementById("signupEmail").value.trim();
+
+        const password =
+          document.getElementById("signupPassword").value;
+
+        try {
+          const { data, error } =
+            await supabaseClient.auth.signUp({
+              email: email,
+              password: password,
+              options: {
+                data: {
+                  full_name: fullName
+                }
+              }
+            });
+
+          if (error) throw error;
+
+          if (data.session) {
+            message.textContent =
+              "Account created successfully! You can now continue to the Academy.";
+          } else {
+            message.textContent =
+              "Account created! Please check your email to confirm your account before logging in.";
+          }
+
+          this.reset();
+
+        } catch (error) {
+          message.textContent = error.message;
+
+        } finally {
+          button.disabled = false;
+          button.textContent = "Create Account →";
+        }
+      });
+
+    // STUDENT LOGIN
+    document.getElementById("studentLoginForm")
+      .addEventListener("submit", async function(event) {
+
+        event.preventDefault();
+
+        const button = this.querySelector("button");
+        button.disabled = true;
+        button.textContent = "Logging in...";
+
+        const email =
+          document.getElementById("loginEmail").value.trim();
+
+        const password =
+          document.getElementById("loginPassword").value;
+
+        try {
+          const { error } =
+            await supabaseClient.auth.signInWithPassword({
+              email: email,
+              password: password
+            });
+
+          if (error) throw error;
+
+          message.textContent =
+            "Login successful! Welcome to Talent Bridge.";
+
+          window.location.href = "courses.html";
+
+        } catch (error) {
+          message.textContent = error.message;
+
+        } finally {
+          button.disabled = false;
+          button.textContent = "Log In →";
+        }
+      });
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,1091 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080b1c">
+  <title>Talent Bridge | Admin Dashboard</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080b1c;
+      --panel: #11162c;
+      --line: rgba(160,170,255,.16);
+      --text: #f5f7ff;
+      --muted: #a2accb;
+      --purple: #9167ff;
+      --cyan: #50e7f5;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse at 10% 0%, #30205d 0%, transparent 38%),
+        radial-gradient(ellipse at 100% 40%, #102e4d 0%, transparent 34%),
+        var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .hidden { display: none !important; }
+    .screen { min-height: 100vh; padding: 24px 16px; }
+
+    .brand {
+      font-size: 23px;
+      font-weight: 850;
+      letter-spacing: -.8px;
+    }
+
+    .brand span { color: var(--cyan); }
+
+    .login-wrap {
+      width: 100%;
+      max-width: 440px;
+      margin: 55px auto;
+    }
+
+    .login-card, .panel, .stat {
+      background: rgba(17,22,44,.88);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: 0 20px 65px rgba(0,0,0,.18);
+    }
+
+    .login-card { margin-top: 25px; padding: 26px; }
+
+    .eyebrow {
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    h1 {
+      font-size: clamp(27px,6vw,39px);
+      line-height: 1.15;
+      letter-spacing: -1px;
+      margin: 12px 0;
+    }
+
+    h2 { font-size: 19px; margin-bottom: 5px; }
+    .muted { color: var(--muted); font-size: 14px; }
+
+    label {
+      display: block;
+      margin: 19px 0 7px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      color: white;
+      background: #090e22;
+      border: 1px solid #303959;
+      border-radius: 12px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 3px rgba(80,231,245,.08);
+    }
+
+    .btn {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 14px 17px;
+      font-weight: 800;
+      color: #080b1c;
+      background: linear-gradient(100deg,var(--cyan),#9b8aff);
+      margin-top: 20px;
+    }
+
+    .btn:disabled, button:disabled {
+      opacity: .6;
+      cursor: wait;
+    }
+
+    .secondary-btn {
+      background: transparent;
+      border: 1px solid var(--line);
+      color: white;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-weight: 700;
+    }
+
+    .action-btn {
+      background: linear-gradient(100deg,var(--cyan),#9b8aff);
+      border: 0;
+      color: #080b1c;
+      border-radius: 9px;
+      padding: 9px 13px;
+      margin: 9px 6px 0 0;
+      font-weight: 800;
+    }
+
+    .reject-btn {
+      background: #3a2038;
+      color: #ffb8d1;
+      border: 1px solid #77415c;
+      border-radius: 9px;
+      padding: 9px 13px;
+      margin: 9px 6px 0 0;
+      font-weight: 800;
+    }
+
+    .message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      background: rgba(145,103,255,.12);
+      color: #ded6ff;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .dashboard {
+      width: 100%;
+      max-width: 1150px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+      padding: 10px 0 30px;
+    }
+
+    .welcome { margin: 10px 0 25px; }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat { padding: 20px; min-width: 0; }
+
+    .stat-number {
+      font-size: 30px;
+      font-weight: 850;
+      margin-top: 7px;
+      overflow-wrap: anywhere;
+    }
+
+    .panel {
+      padding: 21px;
+      margin-bottom: 20px;
+      min-width: 0;
+    }
+
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+
+    .table-wrap { overflow-x: auto; width: 100%; }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      min-width: 650px;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 14px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    th {
+      color: var(--cyan);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    td { color: #e6eaff; }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 30px 10px;
+    }
+
+    .review-card {
+      padding: 17px;
+      margin: 13px 0;
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: rgba(8,11,28,.5);
+      overflow-wrap: anywhere;
+    }
+
+    .review-card h3 {
+      font-size: 17px;
+      margin-bottom: 6px;
+    }
+
+    .review-card p {
+      margin-top: 7px;
+      font-size: 13px;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 20px;
+      background: rgba(80,231,245,.1);
+      color: var(--cyan);
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    .security-note {
+      border-left: 3px solid var(--cyan);
+      padding: 12px 14px;
+      background: rgba(80,231,245,.06);
+      border-radius: 5px 12px 12px 5px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 20px;
+    }
+
+    @media(max-width:600px) {
+      .stats { grid-template-columns: 1fr; }
+      .stat { padding: 16px; }
+      .login-wrap { margin-top: 30px; }
+      .login-card, .panel { padding: 18px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- LOGIN -->
+  <section id="loginScreen" class="screen">
+    <div class="login-wrap">
+      <div class="brand">Talent <span>Bridge.</span></div>
+
+      <div class="login-card">
+        <div class="eyebrow">Private workspace</div>
+        <h1>Welcome back.</h1>
+        <p class="muted">Sign in to manage Talent Bridge.</p>
+
+        <form id="loginForm">
+          <label for="email">Admin email</label>
+          <input id="email" type="email"
+            value="eugeneangel34@gmail.com"
+            autocomplete="username" required>
+
+          <label for="password">Password</label>
+          <input id="password" type="password"
+            autocomplete="current-password"
+            placeholder="Enter your Supabase password" required>
+
+          <button id="loginBtn" class="btn" type="submit">
+            Sign in to Dashboard
+          </button>
+        </form>
+
+        <div id="loginMessage" class="message hidden"></div>
+
+        <div class="security-note">
+          Only the authorised administrator should access this workspace.
+          Never share your password or secret keys.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <main id="dashboardScreen" class="screen hidden">
+    <div class="dashboard">
+
+      <header class="topbar">
+        <div class="brand">Talent <span>Bridge.</span></div>
+        <button id="logoutBtn" class="secondary-btn">Log out</button>
+      </header>
+
+      <section class="welcome">
+        <div class="eyebrow">Admin control centre</div>
+        <h1>Your opportunity hub.</h1>
+        <p class="muted" id="adminLabel">Signed in</p>
+      </section>
+
+      <section class="stats">
+        <div class="stat">
+          <p class="muted">Applications loaded</p>
+          <div id="applicationCount" class="stat-number">—</div>
+        </div>
+        <div class="stat">
+          <p class="muted">Access status</p>
+          <div class="stat-number" style="font-size:20px">Private</div>
+        </div>
+        <div class="stat">
+          <p class="muted">Platform</p>
+          <div class="stat-number" style="font-size:20px">Talent Bridge</div>
+        </div>
+      </section>
+
+      <!-- CANDIDATE APPLICATIONS -->
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Candidate applications</h2>
+            <p class="muted">Latest submissions from your application form.</p>
+          </div>
+          <button id="refreshBtn" class="secondary-btn">Refresh</button>
+        </div>
+
+        <div id="dataMessage" class="message">
+          Sign in to load applications.
+        </div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Full name</th>
+                <th>Email</th>
+                <th>Skills</th>
+              </tr>
+            </thead>
+            <tbody id="applicationsBody">
+              <tr>
+                <td colspan="4" class="empty">
+                  No applications loaded yet.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- COMPANY APPROVALS -->
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Company approvals</h2>
+            <p class="muted">Review company registrations.</p>
+          </div>
+          <button id="companyRefreshBtn" class="secondary-btn">Refresh</button>
+        </div>
+
+        <div id="companyMessage" class="message">
+          Sign in to review companies.
+        </div>
+        <div id="companiesList"></div>
+      </section>
+
+      <!-- OPPORTUNITY REVIEWS -->
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Opportunity reviews</h2>
+            <p class="muted">Review and publish company opportunities.</p>
+          </div>
+          <button id="opportunityRefreshBtn" class="secondary-btn">Refresh</button>
+        </div>
+
+        <div id="opportunityMessage" class="message">
+          Sign in to review opportunities.
+        </div>
+        <div id="opportunitiesList"></div>
+      </section>
+
+      <!-- LEARNING ACADEMY COURSE REVIEWS -->
+      <section class="panel">
+        <div class="panel-head">
+          <div>
+            <h2>Learning Academy — Course Reviews</h2>
+            <p class="muted">Review courses submitted by instructors.</p>
+          </div>
+          <button id="courseRefreshBtn" class="secondary-btn">
+            Refresh
+          </button>
+        </div>
+
+        <div id="courseMessage" class="message">
+          Sign in to review courses.
+        </div>
+
+        <div id="coursesList"></div>
+      </section>
+
+      <div class="security-note">
+        Candidate and company information is confidential. Only use it
+        for legitimate platform administration and recruitment purposes.
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    const SUPABASE_URL =
+      "https://bmfpkaowsqfqekpsyxxd.supabase.co";
+
+    const SUPABASE_PUBLISHABLE_KEY =
+      "sb_publishable_v5uJioRwo5XxyfNOFeWHUQ_03LERwgd";
+
+    const ADMIN_FUNCTION_URL =
+      "https://bmfpkaowsqfqekpsyxxd.supabase.co/functions/v1/Admin-Applications-";
+
+    const REVIEW_FUNCTION_URL =
+      "https://bmfpkaowsqfqekpsyxxd.supabase.co/functions/v1/Admin-Company-Review-";
+
+    // CORRECTED COURSE REVIEW URL: TWO HYPHENS AFTER COURSE
+    const COURSE_REVIEW_FUNCTION_URL =
+      "https://bmfpkaowsqfqekpsyxxd.supabase.co/functions/v1/Admin-Course--Review-";
+
+    const ADMIN_EMAIL = "eugeneangel34@gmail.com";
+
+    let supabaseClient = null;
+
+    const loginScreen = document.getElementById("loginScreen");
+    const dashboardScreen = document.getElementById("dashboardScreen");
+    const loginForm = document.getElementById("loginForm");
+    const loginBtn = document.getElementById("loginBtn");
+    const loginMessage = document.getElementById("loginMessage");
+    const dataMessage = document.getElementById("dataMessage");
+    const applicationsBody = document.getElementById("applicationsBody");
+
+    function showMessage(element, message) {
+      element.textContent = message;
+      element.classList.remove("hidden");
+    }
+
+    function hideMessage(element) {
+      element.textContent = "";
+      element.classList.add("hidden");
+    }
+
+    function showLogin() {
+      dashboardScreen.classList.add("hidden");
+      loginScreen.classList.remove("hidden");
+    }
+
+    function showDashboard(user) {
+      loginScreen.classList.add("hidden");
+      dashboardScreen.classList.remove("hidden");
+      document.getElementById("adminLabel").textContent =
+        "Signed in as " + user.email;
+    }
+
+    function showEmpty(message) {
+      applicationsBody.replaceChildren();
+      const row = document.createElement("tr");
+      const cell = document.createElement("td");
+      cell.colSpan = 4;
+      cell.className = "empty";
+      cell.textContent = message;
+      row.appendChild(cell);
+      applicationsBody.appendChild(row);
+    }
+
+    function addCell(row, value) {
+      const cell = document.createElement("td");
+      cell.textContent = value == null ? "" : String(value);
+      row.appendChild(cell);
+    }
+
+    function renderApplications(applications) {
+      applicationsBody.replaceChildren();
+
+      document.getElementById("applicationCount").textContent =
+        String(applications.length);
+
+      if (!applications.length) {
+        showEmpty("No applications have been submitted yet.");
+        return;
+      }
+
+      for (const application of applications) {
+        const row = document.createElement("tr");
+
+        const date = application.created_at
+          ? new Date(application.created_at).toLocaleString()
+          : "—";
+
+        addCell(row, date);
+        addCell(row, application.full_name);
+        addCell(row, application.email);
+        addCell(row, application.skills);
+
+        applicationsBody.appendChild(row);
+      }
+    }
+
+    async function loadApplications() {
+      if (!supabaseClient) return;
+
+      const {
+        data: { session },
+        error: sessionError
+      } = await supabaseClient.auth.getSession();
+
+      if (sessionError || !session) {
+        showLogin();
+        showMessage(loginMessage, "Please sign in again.");
+        return;
+      }
+
+      showMessage(dataMessage, "Loading applications...");
+      document.getElementById("refreshBtn").disabled = true;
+
+      try {
+        const response = await fetch(ADMIN_FUNCTION_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_PUBLISHABLE_KEY,
+            "Authorization": "Bearer " + session.access_token
+          },
+          body: JSON.stringify({})
+        });
+
+        const result = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+          throw new Error(
+            result.error || "Request failed (" + response.status + ")."
+          );
+        }
+
+        if (!Array.isArray(result.applications)) {
+          throw new Error("Unexpected response from applications function.");
+        }
+
+        renderApplications(result.applications);
+        showMessage(dataMessage, "Applications loaded successfully.");
+
+      } catch (error) {
+        showEmpty("Applications could not be loaded.");
+        showMessage(dataMessage, "Error: " + error.message);
+      } finally {
+        document.getElementById("refreshBtn").disabled = false;
+      }
+    }
+
+    // EXISTING COMPANY AND OPPORTUNITY REVIEW FUNCTION
+    async function reviewRequest(action, id) {
+      const {
+        data: { session },
+        error
+      } = await supabaseClient.auth.getSession();
+
+      if (error || !session) {
+        throw new Error("Please sign in again.");
+      }
+
+      const response = await fetch(REVIEW_FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_PUBLISHABLE_KEY,
+          "Authorization": "Bearer " + session.access_token
+        },
+        body: JSON.stringify({ action, id })
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Review request failed (" + response.status + ")."
+        );
+      }
+
+      return result;
+    }
+
+    // COMPANY AND OPPORTUNITY ACTION BUTTONS
+    function createButton(label, action, id, isReject = false) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = isReject ? "reject-btn" : "action-btn";
+      button.textContent = label;
+
+      button.addEventListener("click", async () => {
+        const confirmation = confirm(
+          "Are you sure you want to " + label.toLowerCase() + "?"
+        );
+
+        if (!confirmation) return;
+
+        button.disabled = true;
+
+        try {
+          await reviewRequest(action, id);
+          alert("Action completed successfully.");
+          await loadAllReviews();
+        } catch (error) {
+          alert(error.message);
+          button.disabled = false;
+        }
+      });
+
+      return button;
+    }
+
+    // LOAD COMPANIES
+    async function loadCompanies() {
+      const container = document.getElementById("companiesList");
+      const message = document.getElementById("companyMessage");
+
+      container.replaceChildren();
+      message.textContent = "Loading company registrations...";
+
+      try {
+        const result = await reviewRequest("list_companies");
+
+        if (!Array.isArray(result.companies) || result.companies.length === 0) {
+          message.textContent = "No company registrations yet.";
+          return;
+        }
+
+        for (const company of result.companies) {
+          const card = document.createElement("div");
+          card.className = "review-card";
+
+          const heading = document.createElement("h3");
+          heading.textContent = company.company_name || "Unnamed company";
+
+          const email = document.createElement("p");
+          email.className = "muted";
+          email.textContent = "Email: " + (company.work_email || "Not provided");
+
+          const industry = document.createElement("p");
+          industry.className = "muted";
+          industry.textContent = "Industry: " + (company.industry || "Not provided");
+
+          const description = document.createElement("p");
+          description.textContent = company.description || "";
+
+          const status = document.createElement("span");
+          status.className = "status";
+          status.textContent = "Status: " + (company.approval_status || "unknown");
+
+          card.append(heading, email, industry, description, status);
+
+          if (company.website) {
+            const website = document.createElement("p");
+            website.textContent = "Website: " + company.website;
+            card.appendChild(website);
+          }
+
+          if (company.approval_status === "pending") {
+            card.append(
+              createButton("Approve", "approve_company", company.id),
+              createButton("Reject", "reject_company", company.id, true)
+            );
+          }
+
+          container.appendChild(card);
+        }
+
+        message.textContent = "Company registrations loaded.";
+
+      } catch (error) {
+        message.textContent = "Could not load companies: " + error.message;
+      }
+    }
+
+    // LOAD OPPORTUNITIES
+    async function loadOpportunities() {
+      const container = document.getElementById("opportunitiesList");
+      const message = document.getElementById("opportunityMessage");
+
+      container.replaceChildren();
+      message.textContent = "Loading opportunities...";
+
+      try {
+        const result = await reviewRequest("list_opportunities");
+
+        if (!Array.isArray(result.opportunities) || result.opportunities.length === 0) {
+          message.textContent = "No opportunities submitted yet.";
+          return;
+        }
+
+        for (const job of result.opportunities) {
+          const card = document.createElement("div");
+          card.className = "review-card";
+
+          const heading = document.createElement("h3");
+          heading.textContent = job.title || "Untitled opportunity";
+
+          const company = document.createElement("p");
+          company.className = "muted";
+          company.textContent =
+            "Company: " + (job.companies?.company_name || "Unknown company");
+
+          const type = document.createElement("p");
+          type.className = "muted";
+          type.textContent =
+            "Type: " + (job.opportunity_type || "Not specified");
+
+          const location = document.createElement("p");
+          location.className = "muted";
+          location.textContent =
+            "Location: " + (job.location || "Not specified");
+
+          const description = document.createElement("p");
+          description.textContent = job.description || "";
+
+          const status = document.createElement("span");
+          status.className = "status";
+          status.textContent = "Status: " + (job.status || "unknown");
+
+          card.append(
+            heading, company, type, location, description, status
+          );
+
+          if (job.application_url) {
+            const link = document.createElement("p");
+            link.textContent = "Application link: " + job.application_url;
+            card.appendChild(link);
+          }
+
+          if (job.status === "pending") {
+            card.appendChild(
+              createButton("Publish", "publish_opportunity", job.id)
+            );
+          }
+
+          if (job.status === "published") {
+            card.appendChild(
+              createButton("Close opportunity", "close_opportunity", job.id, true)
+            );
+          }
+
+          container.appendChild(card);
+        }
+
+        message.textContent = "Opportunity submissions loaded.";
+
+      } catch (error) {
+        message.textContent = "Could not load opportunities: " + error.message;
+      }
+    }
+
+    // LEARNING ACADEMY REVIEW FUNCTION
+    async function courseReviewRequest(action, courseId = null) {
+      const {
+        data: { session },
+        error
+      } = await supabaseClient.auth.getSession();
+
+      if (error || !session) {
+        throw new Error("Please sign in again.");
+      }
+
+      const response = await fetch(COURSE_REVIEW_FUNCTION_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_PUBLISHABLE_KEY,
+          "Authorization": "Bearer " + session.access_token
+        },
+        body: JSON.stringify({
+          action,
+          course_id: courseId
+        })
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          result.error || "Course review failed (" + response.status + ")."
+        );
+      }
+
+      return result;
+    }
+
+    // COURSE ACTION BUTTONS
+    function createCourseButton(label, action, courseId, isReject = false) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = isReject ? "reject-btn" : "action-btn";
+      button.textContent = label;
+
+      button.addEventListener("click", async () => {
+        if (!confirm(
+          "Are you sure you want to " + label.toLowerCase() + " this course?"
+        )) {
+          return;
+        }
+
+        button.disabled = true;
+
+        try {
+          await courseReviewRequest(action, courseId);
+          alert("Course successfully updated.");
+          await loadCourses();
+        } catch (error) {
+          alert(error.message);
+          button.disabled = false;
+        }
+      });
+
+      return button;
+    }
+
+    // LOAD COURSES
+    async function loadCourses() {
+      const container = document.getElementById("coursesList");
+      const message = document.getElementById("courseMessage");
+
+      container.replaceChildren();
+      message.textContent = "Loading submitted courses...";
+
+      try {
+        const result = await courseReviewRequest("list_courses");
+
+        if (!Array.isArray(result.courses) || result.courses.length === 0) {
+          message.textContent = "No courses submitted yet.";
+          return;
+        }
+
+        for (const course of result.courses) {
+          const card = document.createElement("div");
+          card.className = "review-card";
+
+          const heading = document.createElement("h3");
+          heading.textContent = course.title || "Untitled course";
+
+          const instructor = document.createElement("p");
+          instructor.className = "muted";
+          instructor.textContent =
+            "Instructor: " + (course.instructor_name || "Unknown");
+
+          const category = document.createElement("p");
+          category.className = "muted";
+          category.textContent =
+            "Category: " + (course.category || "Not specified");
+
+          const description = document.createElement("p");
+          description.textContent =
+            course.description || "No description provided.";
+
+          const price = document.createElement("p");
+          price.className = "muted";
+          price.textContent =
+            "Course type: " + (course.course_type || "Unknown") +
+            " | Price: ₦" +
+            Number(course.price || 0).toLocaleString("en-NG");
+
+          const status = document.createElement("span");
+          status.className = "status";
+          status.textContent = "Status: " + (course.status || "unknown");
+
+          card.append(
+            heading,
+            instructor,
+            category,
+            description,
+            price,
+            status
+          );
+
+          if (course.status === "pending") {
+            card.append(
+              createCourseButton("Approve", "approve_course", course.id),
+              createCourseButton("Reject", "reject_course", course.id, true)
+            );
+          }
+
+          if (course.status === "approved") {
+            card.append(
+              createCourseButton("Publish", "publish_course", course.id),
+              createCourseButton("Reject", "reject_course", course.id, true)
+            );
+          }
+
+          container.appendChild(card);
+        }
+
+        message.textContent = "Course submissions loaded successfully.";
+
+      } catch (error) {
+        message.textContent = "Could not load courses: " + error.message;
+      }
+    }
+
+    // LOAD ALL REVIEWS
+    async function loadAllReviews() {
+      await loadCompanies();
+      await loadOpportunities();
+      await loadCourses();
+    }
+
+    async function startDashboard() {
+      const {
+        data: { session },
+        error
+      } = await supabaseClient.auth.getSession();
+
+      if (error || !session) {
+        showLogin();
+        return;
+      }
+
+      if (
+        !session.user.email ||
+        session.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()
+      ) {
+        await supabaseClient.auth.signOut();
+        showLogin();
+        showMessage(loginMessage, "This account is not authorised.");
+        return;
+      }
+
+      showDashboard(session.user);
+
+      await loadApplications();
+      await loadAllReviews();
+    }
+
+    async function initialise() {
+      if (!window.supabase) {
+        showMessage(
+          loginMessage,
+          "Login library did not load. Check your internet and reload."
+        );
+        return;
+      }
+
+      supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_PUBLISHABLE_KEY,
+        {
+          auth: {
+            persistSession: true,
+            autoRefreshToken: true,
+            detectSessionInUrl: true
+          }
+        }
+      );
+
+      await startDashboard();
+
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (event === "SIGNED_OUT") {
+          showLogin();
+        } else if (event === "SIGNED_IN" && session) {
+          setTimeout(() => startDashboard(), 0);
+        }
+      });
+    }
+
+    // LOGIN
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (!supabaseClient) {
+        showMessage(loginMessage, "Please wait for the page to load.");
+        return;
+      }
+
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+
+      if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
+        showMessage(loginMessage, "This email is not authorised.");
+        return;
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = "Signing in...";
+      hideMessage(loginMessage);
+
+      try {
+        const { data, error } =
+          await supabaseClient.auth.signInWithPassword({ email, password });
+
+        if (error) throw error;
+
+        if (
+          !data.user ||
+          data.user.email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()
+        ) {
+          await supabaseClient.auth.signOut();
+          throw new Error("This account is not authorised.");
+        }
+
+        showDashboard(data.user);
+        await loadApplications();
+        await loadAllReviews();
+
+        document.getElementById("password").value = "";
+
+      } catch (error) {
+        showMessage(loginMessage, error.message || "Sign-in failed.");
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "Sign in to Dashboard";
+      }
+    });
+
+    // REFRESH BUTTONS
+    document.getElementById("refreshBtn").addEventListener(
+      "click", loadApplications
+    );
+
+    document.getElementById("companyRefreshBtn").addEventListener(
+      "click", loadCompanies
+    );
+
+    document.getElementById("opportunityRefreshBtn").addEventListener(
+      "click", loadOpportunities
+    );
+
+    document.getElementById("courseRefreshBtn").addEventListener(
+      "click", loadCourses
+    );
+
+    // LOG OUT
+    document.getElementById("logoutBtn").addEventListener(
+      "click", async () => {
+        if (supabaseClient) {
+          await supabaseClient.auth.signOut();
+        }
+
+        showLogin();
+        showEmpty("No applications loaded yet.");
+        document.getElementById("applicationCount").textContent = "—";
+        showMessage(loginMessage, "You have logged out.");
+      }
+    );
+
+    initialise();
+  </script>
+
+</body>
+</html>
