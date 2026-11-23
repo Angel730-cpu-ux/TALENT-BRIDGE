@@ -1,0 +1,1354 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Companies | Talent Bridge</title>
+  <meta name="description" content="Discover emerging talent, build exceptional teams and connect with ambitious people across the world through Talent Bridge.">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --ocean: #19364A;
+      --midnight: #263D50;
+      --gold: #E7B978;
+      --teal: #80AAA1;
+      --ivory: #FAF7F0;
+      --white: #FFFFFF;
+      --muted: #AAB9C0;
+      --border: rgba(231, 185, 120, .22);
+      --panel: rgba(28, 54, 71, .88);
+      --dark: #102633;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ivory);
+      background:
+        radial-gradient(ellipse at 8% 8%, rgba(128, 170, 161, .18), transparent 35%),
+        radial-gradient(ellipse at 92% 40%, rgba(231, 185, 120, .12), transparent 32%),
+        linear-gradient(145deg, #102633, #19364A 55%, #263D50);
+      overflow-x: hidden;
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        radial-gradient(2px 2px at 20px 30px, #E7B978, transparent),
+        radial-gradient(2px 2px at 90px 120px, #80AAA1, transparent),
+        radial-gradient(1px 1px at 160px 70px, #FFFFFF, transparent);
+      background-size: 200px 170px;
+      opacity: .22;
+      animation: stars 22s linear infinite;
+    }
+
+    @keyframes stars {
+      from { transform: translateY(0); }
+      to { transform: translateY(-170px); }
+    }
+
+    header {
+      position: relative;
+      z-index: 2;
+      padding: 20px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(16, 38, 51, .82);
+      backdrop-filter: blur(16px);
+    }
+
+    .logo {
+      color: var(--ivory);
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -.8px;
+      text-decoration: none;
+    }
+
+    .logo span {
+      color: var(--gold);
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 18px;
+    }
+
+    nav a {
+      color: #C3D0D3;
+      text-decoration: none;
+      font-size: 13px;
+      transition: color .2s;
+    }
+
+    nav a:hover,
+    nav a.active {
+      color: var(--gold);
+    }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 78px 20px 42px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      color: var(--gold);
+      border: 1px solid rgba(231, 185, 120, .38);
+      background: rgba(231, 185, 120, .08);
+      border-radius: 30px;
+      padding: 10px 17px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      margin-bottom: 23px;
+    }
+
+    h1 {
+      font-size: clamp(36px, 7vw, 66px);
+      line-height: 1.08;
+      letter-spacing: -2px;
+      max-width: 880px;
+      margin: auto;
+    }
+
+    h1 span {
+      background: linear-gradient(90deg, var(--gold), #F5DDB4, var(--teal));
+      color: transparent;
+      background-clip: text;
+      -webkit-background-clip: text;
+    }
+
+    .hero p {
+      max-width: 640px;
+      margin: 22px auto 0;
+      color: #C2D0D3;
+      line-height: 1.9;
+      font-size: 15px;
+    }
+
+    .layout {
+      position: relative;
+      z-index: 1;
+      width: min(1100px, 92%);
+      margin: 22px auto 80px;
+      display: grid;
+      grid-template-columns: .85fr 1.15fr;
+      gap: 25px;
+      align-items: start;
+    }
+
+    .intro,
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 30px;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, .2);
+      backdrop-filter: blur(14px);
+    }
+
+    .intro {
+      background:
+        linear-gradient(145deg, rgba(128, 170, 161, .16), rgba(25, 54, 74, .94));
+    }
+
+    .intro h2,
+    .panel h2 {
+      font-size: 25px;
+      line-height: 1.35;
+      margin-bottom: 13px;
+      color: var(--ivory);
+    }
+
+    .intro > p,
+    .panel > p {
+      color: #C1CDD0;
+      font-size: 14px;
+      line-height: 1.9;
+    }
+
+    .benefits {
+      list-style: none;
+      margin-top: 28px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .benefits li {
+      display: flex;
+      gap: 13px;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.7;
+      color: #DCE5E3;
+    }
+
+    .benefits strong {
+      color: var(--ivory);
+    }
+
+    .check {
+      color: var(--gold);
+      font-size: 20px;
+    }
+
+    .secure-note {
+      margin-top: 28px;
+      padding: 17px;
+      border-radius: 14px;
+      background: rgba(128, 170, 161, .10);
+      border: 1px solid rgba(128, 170, 161, .2);
+      color: #D9E8E2;
+      font-size: 12px;
+      line-height: 1.8;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 9px;
+      margin: 24px 0;
+      padding: 5px;
+      border-radius: 13px;
+      background: rgba(8, 24, 34, .55);
+    }
+
+    .tab {
+      flex: 1;
+      border: 0;
+      border-radius: 10px;
+      padding: 13px 7px;
+      cursor: pointer;
+      color: #B9C8CB;
+      background: transparent;
+      font-size: 13px;
+      font-weight: 800;
+      transition: .2s;
+    }
+
+    .tab.active {
+      color: var(--dark);
+      background: linear-gradient(110deg, var(--gold), #F4DDB9);
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 800;
+      margin-bottom: 9px;
+      color: #E8E9DF;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid rgba(128, 170, 161, .25);
+      border-radius: 12px;
+      padding: 14px 15px;
+      background: rgba(10, 29, 40, .72);
+      color: var(--ivory);
+      font: inherit;
+      font-size: 14px;
+      outline: none;
+      transition: border .2s, box-shadow .2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(231, 185, 120, .10);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #82999D;
+    }
+
+    select option {
+      background: #19364A;
+      color: white;
+    }
+
+    textarea {
+      min-height: 115px;
+      resize: vertical;
+      line-height: 1.7;
+    }
+
+    .primary {
+      width: 100%;
+      border: 0;
+      border-radius: 12px;
+      padding: 16px;
+      color: #172E3A;
+      background: linear-gradient(105deg, var(--gold), #F3DDB8);
+      font-weight: 900;
+      font-size: 14px;
+      cursor: pointer;
+      transition: transform .2s, filter .2s, box-shadow .2s;
+      box-shadow: 0 8px 25px rgba(231, 185, 120, .10);
+    }
+
+    .primary:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.06);
+      box-shadow: 0 12px 28px rgba(231, 185, 120, .16);
+    }
+
+    .primary:disabled {
+      opacity: .55;
+      cursor: wait;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      margin: 16px 0;
+      padding: 14px;
+      border-radius: 11px;
+      font-size: 13px;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      background: rgba(80, 190, 137, .12);
+      color: #A8F0CA;
+      border: 1px solid rgba(80, 190, 137, .3);
+    }
+
+    .message.error {
+      background: rgba(255, 92, 116, .12);
+      color: #FFB7C0;
+      border: 1px solid rgba(255, 92, 116, .3);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .status-card {
+      border: 1px solid var(--border);
+      background: rgba(9, 27, 38, .38);
+      padding: 21px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    .status-card h3 {
+      color: var(--ivory);
+      line-height: 1.5;
+    }
+
+    .status-pill {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 900;
+      background: rgba(231, 185, 120, .13);
+      color: var(--gold);
+      text-transform: uppercase;
+      margin: 13px 0;
+    }
+
+    .status-pill.approved {
+      color: #A8F0CA;
+      background: rgba(80, 190, 137, .13);
+    }
+
+    .status-pill.rejected {
+      color: #FFB7C0;
+      background: rgba(255, 92, 116, .13);
+    }
+
+    .small {
+      color: #B7C7CA;
+      font-size: 12px;
+      line-height: 1.8;
+      margin-top: 10px;
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      color: #AABCC0;
+      padding: 27px 15px;
+      font-size: 12px;
+    }
+
+    footer span {
+      color: var(--gold);
+      font-weight: 800;
+    }
+
+    @media (max-width: 760px) {
+      header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      nav {
+        justify-content: flex-start;
+        gap: 13px;
+      }
+
+      .hero {
+        padding-top: 52px;
+      }
+
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .intro,
+      .panel {
+        padding: 23px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="stars"></div>
+
+  <header>
+    <a class="logo" href="index.html">
+      TALENT<span>BRIDGE</span>
+    </a>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="path.html">Find Your Path</a>
+      <a href="courses.html">Courses</a>
+      <a href="opportunities.html">Opportunities</a>
+      <a href="talent.html">Talent</a>
+      <a href="companies.html" class="active">Companies</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">YOUR COMPANY. GLOBAL TALENT.</div>
+
+    <h1>
+      Build your team with
+      <span>extraordinary talent.</span>
+    </h1>
+
+    <p>
+      Great ideas deserve great people. Connect with emerging African talent,
+      discover fresh perspectives and find capable people ready to contribute
+      to meaningful work across the world.
+    </p>
+  </section>
+
+  <main class="layout">
+
+    <aside class="intro">
+      <h2>Great teams start with the right people.</h2>
+
+      <p>
+        Talent Bridge creates a connection between ambitious people
+        and companies looking for fresh ideas, useful skills and
+        meaningful contributions.
+      </p>
+
+      <ul class="benefits">
+        <li>
+          <span class="check">✦</span>
+          <span>
+            <strong>Build your presence</strong><br>
+            Introduce your company to a growing talent community.
+          </span>
+        </li>
+
+        <li>
+          <span class="check">✦</span>
+          <span>
+            <strong>Discover emerging talent</strong><br>
+            Connect with people ready to learn, create and contribute.
+          </span>
+        </li>
+
+        <li>
+          <span class="check">✦</span>
+          <span>
+            <strong>Share real opportunities</strong><br>
+            Publish jobs, internships, freelance projects and paid tasks
+            after your company has been approved.
+          </span>
+        </li>
+
+        <li>
+          <span class="check">✦</span>
+          <span>
+            <strong>Reach beyond borders</strong><br>
+            Help talent and opportunity meet across locations and industries.
+          </span>
+        </li>
+      </ul>
+
+      <div class="secure-note">
+        🔒 <strong>Trust comes first.</strong><br>
+        Company registrations are private. Every company must be
+        reviewed before it can submit opportunities. Submitted
+        opportunities also require administrator approval before publication.
+      </div>
+    </aside>
+
+    <section class="panel">
+
+      <h2 id="formTitle">Join Talent Bridge</h2>
+
+      <p id="formSubtitle">
+        Create your company account to get started.
+      </p>
+
+      <div class="tabs" id="authTabs">
+        <button class="tab active" id="signupTab" type="button">
+          Create account
+        </button>
+
+        <button class="tab" id="loginTab" type="button">
+          Log in
+        </button>
+      </div>
+
+      <div id="message" class="message" role="status" aria-live="polite"></div>
+
+      <form id="authForm">
+
+        <div class="field" id="nameField">
+          <label for="contactName">Your name</label>
+          <input
+            id="contactName"
+            type="text"
+            autocomplete="name"
+            placeholder="Enter your name"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="email">Work email</label>
+          <input
+            id="email"
+            type="email"
+            autocomplete="email"
+            placeholder="you@company.com"
+            required
+          >
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            minlength="8"
+            autocomplete="new-password"
+            placeholder="At least 8 characters"
+            required
+          >
+        </div>
+
+        <button class="primary" id="authButton" type="submit">
+          Create company account →
+        </button>
+      </form>
+
+      <div id="registrationSection" class="hidden">
+
+        <div class="status-card">
+          <h3>Company registration</h3>
+          <p class="small">
+            Tell us about your company. Your registration will remain
+            private while it is reviewed.
+          </p>
+        </div>
+
+        <form id="companyForm" style="margin-top:22px">
+
+          <div class="field">
+            <label for="companyName">Company name</label>
+            <input
+              id="companyName"
+              maxlength="120"
+              required
+              placeholder="Your company name"
+            >
+          </div>
+
+          <div class="field">
+            <label for="workEmail">Company contact email</label>
+            <input
+              id="workEmail"
+              type="email"
+              maxlength="254"
+              required
+              placeholder="contact@company.com"
+            >
+          </div>
+
+          <div class="field">
+            <label for="website">Website (optional)</label>
+            <input
+              id="website"
+              type="url"
+              maxlength="300"
+              placeholder="https://yourcompany.com"
+            >
+          </div>
+
+          <div class="field">
+            <label for="industry">Industry</label>
+            <select id="industry" required>
+              <option value="">Choose your industry</option>
+              <option>Technology</option>
+              <option>Education</option>
+              <option>Finance</option>
+              <option>Design and Creative</option>
+              <option>Media and Communications</option>
+              <option>Healthcare</option>
+              <option>Business Services</option>
+              <option>Agriculture</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="description">About your company</label>
+            <textarea
+              id="description"
+              maxlength="3000"
+              required
+              placeholder="What does your company do? What kind of talent are you looking for?"
+            ></textarea>
+          </div>
+
+          <button class="primary" id="registerButton" type="submit">
+            Submit for approval ✦
+          </button>
+
+        </form>
+      </div>
+
+      <div id="dashboardSection" class="hidden">
+
+        <div class="status-card">
+          <h3 id="companyStatusTitle">Your company dashboard</h3>
+
+          <span id="statusPill" class="status-pill">
+            Pending review
+          </span>
+
+          <p id="companyStatusText" class="small">
+            Your company registration status will appear here.
+          </p>
+        </div>
+
+        <div id="jobSection" class="hidden" style="margin-top:25px">
+
+          <h3 style="margin-bottom:8px">
+            Submit an opportunity
+          </h3>
+
+          <p class="small" style="margin-bottom:18px">
+            Share a genuine job, internship, freelance project or paid task.
+            Every submission is reviewed before it becomes public.
+          </p>
+
+          <form id="jobForm">
+
+            <div class="field">
+              <label for="jobTitle">Opportunity title</label>
+              <input
+                id="jobTitle"
+                maxlength="160"
+                required
+                placeholder="e.g. Frontend Developer Intern"
+              >
+            </div>
+
+            <div class="field">
+              <label for="jobType">Opportunity type</label>
+              <select id="jobType" required>
+                <option value="">Choose type</option>
+                <option>Full-time</option>
+                <option>Part-time</option>
+                <option>Internship</option>
+                <option>Contract</option>
+                <option>Freelance</option>
+                <option>Volunteer</option>
+                <option>Paid Project</option>
+                <option>Paid Task</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="jobLocation">Location</label>
+              <input
+                id="jobLocation"
+                maxlength="160"
+                required
+                value="Remote"
+              >
+            </div>
+
+            <div class="field">
+              <label for="jobDescription">Opportunity description</label>
+              <textarea
+                id="jobDescription"
+                maxlength="5000"
+                required
+                placeholder="Describe the role, responsibilities, requirements and payment terms where applicable."
+              ></textarea>
+            </div>
+
+            <div class="field">
+              <label for="applicationUrl">Application link (optional)</label>
+              <input
+                id="applicationUrl"
+                type="url"
+                maxlength="1000"
+                placeholder="https://yourcompany.com/apply"
+              >
+            </div>
+
+            <button class="primary" id="jobButton" type="submit">
+              Submit opportunity for review →
+            </button>
+
+          </form>
+        </div>
+
+        <button
+          id="logoutButton"
+          class="primary"
+          type="button"
+          style="margin-top:20px;background:transparent;border:1px solid var(--border);color:var(--ivory);box-shadow:none"
+        >
+          Log out
+        </button>
+
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 <span>Talent Bridge</span> · Connecting potential to opportunity.
+  </footer>
+
+  <script>
+    // TALENT BRIDGE - SUPABASE CONNECTION
+
+    const SUPABASE_URL =
+      "https://xkvkaoeheifxcxrvnfvg.supabase.co";
+
+    const SUPABASE_ANON_KEY =
+      "sb_publishable_D1ZEtTKfWBStZFdo7rqYpQ_CaiDxkI3";
+
+    // Use the actual website domain currently open.
+    // This avoids accidentally redirecting users to localhost.
+    const EMAIL_REDIRECT_URL =
+      window.location.origin + "/companies.html";
+
+    const client = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
+    );
+
+    const $ = (id) => document.getElementById(id);
+
+    let authMode = "signup";
+    let currentUser = null;
+    let currentCompany = null;
+    let requestInProgress = false;
+
+    function showMessage(message, type = "success") {
+      const box = $("message");
+      box.textContent = message;
+      box.className = "message show " + type;
+    }
+
+    function clearMessage() {
+      $("message").className = "message";
+      $("message").textContent = "";
+    }
+
+    function setBusy(button, busy, text) {
+      if (busy) {
+        button.dataset.oldText = button.textContent;
+        button.disabled = true;
+        button.textContent = text || "Please wait...";
+      } else {
+        button.disabled = false;
+        button.textContent =
+          button.dataset.oldText || button.textContent;
+      }
+    }
+
+    // Prevent requests from leaving the button loading forever.
+    function withTimeout(promise, milliseconds = 25000) {
+      let timeoutId;
+
+      const timeoutPromise = new Promise((_, reject) => {
+        timeoutId = setTimeout(() => {
+          reject(
+            new Error(
+              "This request is taking longer than expected. Check your internet connection, then try logging in before attempting signup again."
+            )
+          );
+        }, milliseconds);
+      });
+
+      return Promise.race([promise, timeoutPromise])
+        .finally(() => clearTimeout(timeoutId));
+    }
+
+    function setAuthMode(mode) {
+      authMode = mode;
+      clearMessage();
+
+      $("signupTab").classList.toggle(
+        "active",
+        mode === "signup"
+      );
+
+      $("loginTab").classList.toggle(
+        "active",
+        mode === "login"
+      );
+
+      $("nameField").classList.toggle(
+        "hidden",
+        mode === "login"
+      );
+
+      $("contactName").required = mode === "signup";
+
+      $("password").autocomplete =
+        mode === "signup"
+          ? "new-password"
+          : "current-password";
+
+      $("formTitle").textContent =
+        mode === "signup"
+          ? "Join Talent Bridge"
+          : "Welcome back";
+
+      $("formSubtitle").textContent =
+        mode === "signup"
+          ? "Create your company account to get started."
+          : "Log in to manage your company registration.";
+
+      $("authButton").textContent =
+        mode === "signup"
+          ? "Create company account →"
+          : "Log in →";
+    }
+
+    $("signupTab").addEventListener("click", () => {
+      setAuthMode("signup");
+    });
+
+    $("loginTab").addEventListener("click", () => {
+      setAuthMode("login");
+    });
+
+    // AUTHENTICATION: SIGNUP AND LOGIN
+
+    $("authForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (requestInProgress) return;
+
+      clearMessage();
+
+      const button = $("authButton");
+
+      requestInProgress = true;
+      setBusy(button, true);
+
+      try {
+        const email = $("email").value.trim();
+        const password = $("password").value;
+
+        if (!email || !password) {
+          throw new Error("Please enter your email and password.");
+        }
+
+        if (password.length < 8) {
+          throw new Error("Your password must contain at least 8 characters.");
+        }
+
+        if (authMode === "signup") {
+          const contactName =
+            $("contactName").value.trim();
+
+          if (!contactName) {
+            throw new Error("Please enter your name.");
+          }
+
+          const { data, error } = await withTimeout(
+            client.auth.signUp({
+              email,
+              password,
+              options: {
+                data: {
+                  contact_name: contactName
+                },
+                emailRedirectTo: EMAIL_REDIRECT_URL
+              }
+            })
+          );
+
+          if (error) throw error;
+
+          if (!data.user) {
+            throw new Error(
+              "We could not create your account. Please try again."
+            );
+          }
+
+          // If email confirmation is enabled, there may be no session yet.
+          if (!data.session) {
+            $("email").value = email;
+
+            setAuthMode("login");
+
+            showMessage(
+              "Your signup request was accepted. Please check your email for the confirmation link. After confirming, return to this page and log in. Also check your spam folder.",
+              "success"
+            );
+
+            return;
+          }
+
+          currentUser = data.user;
+          await loadCompany();
+
+        } else {
+          const { data, error } = await withTimeout(
+            client.auth.signInWithPassword({
+              email,
+              password
+            })
+          );
+
+          if (error) throw error;
+
+          currentUser = data.user;
+
+          await loadCompany();
+        }
+
+      } catch (error) {
+        console.error("Company account error:", error);
+
+        showMessage(
+          error.message ||
+          "We could not complete that request. Please try again.",
+          "error"
+        );
+
+      } finally {
+        requestInProgress = false;
+        setBusy(button, false);
+      }
+    });
+
+    // LOAD THE COMPANY PROFILE AFTER LOGIN
+
+    async function loadCompany() {
+      const { data: userData, error: userError } =
+        await client.auth.getUser();
+
+      if (userError) throw userError;
+
+      currentUser = userData.user;
+
+      if (!currentUser) {
+        showMessage(
+          "Please log in to continue.",
+          "error"
+        );
+        return;
+      }
+
+      $("authForm").classList.add("hidden");
+
+      // FIX: The tabs container is authTabs, not an element with id="tabs".
+      $("authTabs").classList.add("hidden");
+
+      $("registrationSection").classList.add("hidden");
+      $("dashboardSection").classList.add("hidden");
+
+      clearMessage();
+
+      const { data, error } = await client
+        .from("companies")
+        .select("id, company_name, approval_status, owner_id")
+        .eq("owner_id", currentUser.id)
+        .limit(1);
+
+      if (error) throw error;
+
+      if (!data || data.length === 0) {
+        $("registrationSection").classList.remove("hidden");
+
+        $("formTitle").textContent =
+          "Register your company";
+
+        $("formSubtitle").textContent =
+          "Your next step starts here.";
+
+        $("workEmail").value =
+          currentUser.email || "";
+
+        return;
+      }
+
+      currentCompany = data[0];
+
+      showDashboard();
+    }
+
+    // COMPANY REGISTRATION
+
+    $("companyForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (requestInProgress) return;
+
+      clearMessage();
+
+      if (!currentUser) {
+        showMessage(
+          "Please log in again before registering your company.",
+          "error"
+        );
+        return;
+      }
+
+      const button = $("registerButton");
+
+      requestInProgress = true;
+      setBusy(button, true, "Submitting...");
+
+      try {
+        const website = $("website").value.trim();
+
+        if (
+          website &&
+          !/^https?:\/\//i.test(website)
+        ) {
+          throw new Error(
+            "Please enter a website beginning with https:// or http://"
+          );
+        }
+
+        const payload = {
+          owner_id: currentUser.id,
+          company_name: $("companyName").value.trim(),
+          work_email: $("workEmail").value.trim(),
+          website: website || null,
+          industry: $("industry").value,
+          description: $("description").value.trim(),
+          approval_status: "pending"
+        };
+
+        const { data, error } = await withTimeout(
+          client
+            .from("companies")
+            .insert(payload)
+            .select("id, company_name, approval_status, owner_id")
+            .single()
+        );
+
+        if (error) throw error;
+
+        currentCompany = data;
+
+        $("registrationSection").classList.add("hidden");
+
+        showDashboard();
+
+        showMessage(
+          "Company registration submitted successfully! Your registration is now awaiting review.",
+          "success"
+        );
+
+      } catch (error) {
+        console.error("Company registration error:", error);
+
+        showMessage(
+          error.message ||
+          "Could not submit your registration.",
+          "error"
+        );
+
+      } finally {
+        requestInProgress = false;
+        setBusy(button, false);
+      }
+    });
+
+    // COMPANY DASHBOARD
+
+    function showDashboard() {
+      $("authForm").classList.add("hidden");
+      $("registrationSection").classList.add("hidden");
+      $("dashboardSection").classList.remove("hidden");
+
+      $("authTabs").classList.add("hidden");
+
+      const status = currentCompany.approval_status;
+      const pill = $("statusPill");
+
+      pill.textContent = status;
+      pill.className = "status-pill " + status;
+
+      $("companyStatusTitle").textContent =
+        currentCompany.company_name;
+
+      if (status === "approved") {
+        $("companyStatusText").textContent =
+          "Your company is approved. You can submit jobs, internships, freelance projects and paid tasks below. Every opportunity still requires administrator review before it becomes public.";
+
+        $("jobSection").classList.remove("hidden");
+
+      } else if (status === "rejected") {
+        $("companyStatusText").textContent =
+          "Your registration was rejected. Please contact Talent Bridge support for guidance.";
+
+        $("jobSection").classList.add("hidden");
+
+      } else {
+        $("companyStatusText").textContent =
+          "Your company registration is awaiting administrator approval. You can submit opportunities once your company is approved.";
+
+        $("jobSection").classList.add("hidden");
+      }
+
+      $("formTitle").textContent =
+        "Company dashboard";
+
+      $("formSubtitle").textContent =
+        "Manage your Talent Bridge company account.";
+    }
+
+    // OPPORTUNITY SUBMISSION
+
+    $("jobForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      if (requestInProgress) return;
+
+      clearMessage();
+
+      if (!currentUser || !currentCompany) {
+        showMessage(
+          "Please log in and register your company first.",
+          "error"
+        );
+        return;
+      }
+
+      if (currentCompany.approval_status !== "approved") {
+        showMessage(
+          "Your company must be approved before submitting opportunities.",
+          "error"
+        );
+        return;
+      }
+
+      const button = $("jobButton");
+
+      requestInProgress = true;
+      setBusy(button, true, "Submitting...");
+
+      try {
+        const applicationUrl =
+          $("applicationUrl").value.trim();
+
+        if (
+          applicationUrl &&
+          !/^https?:\/\//i.test(applicationUrl)
+        ) {
+          throw new Error(
+            "Please enter an application link beginning with https:// or http://"
+          );
+        }
+
+        const { error } = await withTimeout(
+          client
+            .from("job_opportunities")
+            .insert({
+              company_id: currentCompany.id,
+              title: $("jobTitle").value.trim(),
+              opportunity_type: $("jobType").value,
+              location: $("jobLocation").value.trim(),
+              description: $("jobDescription").value.trim(),
+              application_url: applicationUrl || null,
+              status: "pending"
+            })
+        );
+
+        if (error) throw error;
+
+        $("jobForm").reset();
+        $("jobLocation").value = "Remote";
+
+        showMessage(
+          "Your opportunity has been submitted for review. It will not appear publicly until an administrator approves and publishes it.",
+          "success"
+        );
+
+      } catch (error) {
+        console.error("Opportunity submission error:", error);
+
+        showMessage(
+          error.message ||
+          "Could not submit this opportunity.",
+          "error"
+        );
+
+      } finally {
+        requestInProgress = false;
+        setBusy(button, false);
+      }
+    });
+
+    // LOG OUT
+
+    $("logoutButton").addEventListener("click", async () => {
+      clearMessage();
+
+      const button = $("logoutButton");
+      setBusy(button, true, "Logging out...");
+
+      try {
+        const { error } = await client.auth.signOut();
+
+        if (error) throw error;
+
+        currentUser = null;
+        currentCompany = null;
+
+        $("dashboardSection").classList.add("hidden");
+        $("registrationSection").classList.add("hidden");
+        $("authForm").classList.remove("hidden");
+
+        $("authTabs").classList.remove("hidden");
+
+        $("email").value = "";
+        $("password").value = "";
+
+        setAuthMode("login");
+
+        $("formTitle").textContent =
+          "Welcome back";
+
+        $("formSubtitle").textContent =
+          "Log in to manage your company registration.";
+
+        showMessage(
+          "You have logged out successfully.",
+          "success"
+        );
+
+      } catch (error) {
+        showMessage(
+          error.message || "Could not log out.",
+          "error"
+        );
+
+      } finally {
+        setBusy(button, false);
+      }
+    });
+
+    // RESTORE A VERIFIED USER SESSION
+
+    async function restoreSession() {
+      try {
+        const { data, error } =
+          await client.auth.getSession();
+
+        if (error) throw error;
+
+        if (data.session) {
+          await loadCompany();
+        }
+
+      } catch (error) {
+        console.error("Session restore error:", error);
+
+        showMessage(
+          "We could not restore your session. Please log in again. " +
+          (error.message || ""),
+          "error"
+        );
+      }
+    }
+
+    // Start session restoration when the page opens.
+    restoreSession();
+
+  </script>
+</body>
+</html>
