@@ -1,0 +1,368 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Centre | Talent Bridge</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+:root {
+  --navy:#19364A;
+  --deep:#263D50;
+  --gold:#E7B978;
+  --teal:#80AAA1;
+  --cream:#FAF7F0;
+  --muted:#71808A;
+  --border:#E7E5DF;
+  --green:#267A59;
+  --red:#B94C4C;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--cream);color:var(--deep)}
+header{background:var(--navy);color:white;padding:20px 6%;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.logo{font-size:22px;font-weight:800}
+.logo span{color:var(--gold)}
+button{border:0;cursor:pointer;font-weight:700;border-radius:9px;padding:12px 16px;transition:.2s}
+button:hover{transform:translateY(-2px)}
+button:disabled{opacity:.5;cursor:wait;transform:none}
+.logout{background:transparent;color:white;border:1px solid #ffffff55}
+main{width:92%;max-width:1150px;margin:35px auto}
+.hero{background:linear-gradient(125deg,var(--navy),#31596A);color:white;padding:35px;border-radius:20px;margin-bottom:25px}
+.hero h1{font-size:clamp(28px,5vw,42px);margin:0 0 12px}
+.hero p{color:#D9E5E7;line-height:1.7;margin:0;max-width:650px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:30px}
+.stat,.item{background:white;border:1px solid var(--border);border-radius:15px;padding:21px;box-shadow:0 8px 25px #19364A0A}
+.stat small{color:var(--muted);font-weight:600}
+.stat h2{font-size:32px;color:var(--navy);margin:10px 0 0}
+.section-heading{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:35px 0 16px}
+.section-heading h2{margin:0}
+.refresh{background:var(--navy);color:white}
+.list{display:grid;gap:15px}
+.item h3{margin:0 0 10px;color:var(--navy);font-size:20px}
+.item p{color:#566671;line-height:1.6;overflow-wrap:anywhere}
+.meta{font-size:13px;color:var(--muted);margin:7px 0}
+.status{display:inline-block;padding:7px 11px;border-radius:30px;font-size:12px;font-weight:800;background:#FFF2D9;color:#8B6325;margin:8px 0}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+.approve{background:var(--green);color:white}
+.reject{background:#FCEAEA;color:var(--red)}
+.empty,.loading{text-align:center;padding:30px 15px;color:var(--muted);background:white;border:1px dashed var(--border);border-radius:15px;line-height:1.6}
+.message{padding:13px 15px;border-radius:10px;margin:15px 0;display:none;line-height:1.5;overflow-wrap:anywhere}
+.message.error{display:block;background:#FCEAEA;color:#963A3A}
+.message.success{display:block;background:#E7F5EC;color:#267A59}
+#loginScreen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:radial-gradient(circle at 10% 10%,#80AAA133,transparent 30%),radial-gradient(circle at 90% 90%,#E7B97833,transparent 30%),var(--cream)}
+.login-card{width:100%;max-width:430px;padding:32px;border-radius:20px;background:white;box-shadow:0 18px 60px #19364A16}
+.login-card h1{color:var(--navy);margin:20px 0 8px}
+.login-card p{color:var(--muted);line-height:1.6}
+label{display:block;margin:17px 0 7px;font-weight:700;font-size:14px}
+input{width:100%;padding:14px;border:1px solid var(--border);border-radius:9px;font-size:15px}
+input:focus{outline:2px solid #80AAA155}
+.sign-in{width:100%;background:var(--navy);color:white;margin-top:22px;padding:15px}
+#dashboard{display:none}
+select{padding:11px;border:1px solid var(--border);border-radius:8px;background:white;color:var(--deep);font-weight:600;max-width:100%}
+footer{text-align:center;padding:30px 15px;color:var(--muted);font-size:13px}
+@media(max-width:650px){
+ .stats{grid-template-columns:1fr 1fr}
+ .stat:last-child{grid-column:1/-1}
+ header{padding:18px 5%}
+ main{margin:22px auto}
+ .hero{padding:25px}
+ .item{padding:18px}
+ .login-card{padding:25px}
+}
+</style>
+</head>
+
+<body>
+
+<section id="loginScreen">
+ <div class="login-card">
+  <div class="logo" style="color:#19364A">TALENT <span style="color:#C89B56">BRIDGE</span></div>
+  <p style="font-size:12px;font-weight:bold;letter-spacing:2px">ADMINISTRATION PORTAL</p>
+  <h1>Welcome back.</h1>
+  <p>Sign in with your authorised administrator account.</p>
+  <div id="loginMessage" class="message"></div>
+  <form id="loginForm">
+   <label for="email">Administrator email</label>
+   <input id="email" type="email" placeholder="Enter your admin email" required>
+   <label for="password">Password</label>
+   <input id="password" type="password" placeholder="Enter your password" required>
+   <button class="sign-in" id="loginButton" type="submit">Sign In to Admin Centre</button>
+  </form>
+ </div>
+</section>
+
+<section id="dashboard">
+<header>
+ <div class="logo">TALENT <span>BRIDGE</span></div>
+ <div style="display:flex;align-items:center;gap:15px;flex-wrap:wrap">
+  <small id="adminEmail"></small>
+  <button class="logout" id="logoutButton">Log out</button>
+ </div>
+</header>
+
+<main>
+ <section class="hero">
+  <h1>Admin Centre</h1>
+  <p>Manage company registrations, review opportunities and oversee student applications across Talent Bridge.</p>
+ </section>
+
+ <div id="dashboardMessage" class="message"></div>
+
+ <section class="stats">
+  <div class="stat"><small>Pending Companies</small><h2 id="companyCount">0</h2></div>
+  <div class="stat"><small>Pending Opportunities</small><h2 id="opportunityCount">0</h2></div>
+  <div class="stat"><small>Total Applications</small><h2 id="applicationCount">0</h2></div>
+ </section>
+
+ <section>
+  <div class="section-heading">
+   <h2>Company Registrations</h2>
+   <button class="refresh" id="refreshButton">↻ Refresh</button>
+  </div>
+  <div class="list" id="companiesList"><div class="loading">Loading companies...</div></div>
+ </section>
+
+ <section>
+  <div class="section-heading"><h2>Opportunity Reviews</h2></div>
+  <div class="list" id="opportunitiesList"><div class="loading">Loading opportunities...</div></div>
+ </section>
+
+ <section>
+  <div class="section-heading"><h2>Student Applications</h2></div>
+  <div class="list" id="applicationsList"><div class="loading">Loading applications...</div></div>
+ </section>
+</main>
+<footer>Talent Bridge Admin Centre · Learn. Build. Connect. Earn.</footer>
+</section>
+
+<script>
+const SUPABASE_URL = "https://xkvkaoeheifxcxrvnfvg.supabase.co";
+const SUPABASE_KEY = "sb_publishable_D1ZEtTKfWBStZFdo7rqYpQ_CaiDxkI3";
+
+const client = window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const $ = id => document.getElementById(id);
+
+function message(element,text,type="error"){
+ element.textContent=text;
+ element.className="message "+type;
+}
+function clearMessage(element){
+ element.textContent="";
+ element.className="message";
+}
+function el(tag,className,text){
+ const node=document.createElement(tag);
+ if(className)node.className=className;
+ if(text!==undefined)node.textContent=text;
+ return node;
+}
+function line(parent,label,value){
+ parent.appendChild(el("p","meta",label+": "+(value||"Not provided")));
+}
+function showDashboard(){
+ $("loginScreen").style.display="none";
+ $("dashboard").style.display="block";
+}
+function showLogin(){
+ $("dashboard").style.display="none";
+ $("loginScreen").style.display="flex";
+}
+async function callAdmin(action,extra={}){
+ const {data,error}=await client.functions.invoke("admin-control",{
+  body:{action,...extra}
+ });
+ if(error){
+  let detail=error.message||"Admin request failed.";
+  try{
+   if(error.context&&typeof error.context.json==="function"){
+    const body=await error.context.json();
+    if(body.error)detail=body.error;
+   }
+  }catch(e){}
+  throw new Error(detail);
+ }
+ if(data&&data.error)throw new Error(data.error);
+ return data;
+}
+async function reviewItem(button,action,id,decision){
+ if(!confirm("Are you sure you want to "+decision+" this item?"))return;
+ const old=button.textContent;
+ button.disabled=true;
+ button.textContent="Saving...";
+ try{
+  await callAdmin(action,{id,decision});
+  message($("dashboardMessage"),"Your change has been saved.","success");
+  await loadDashboard();
+ }catch(error){
+  message($("dashboardMessage"),error.message);
+  button.disabled=false;
+  button.textContent=old;
+ }
+}
+function renderCompanies(items){
+ const box=$("companiesList");
+ box.replaceChildren();
+ $("companyCount").textContent=items.length;
+ if(!items.length){
+  box.appendChild(el("div","empty","No pending company registrations."));
+  return;
+ }
+ items.forEach(company=>{
+  const card=el("article","item");
+  card.appendChild(el("h3","",company.company_name||"Unnamed company"));
+  card.appendChild(el("span","status","Pending review"));
+  line(card,"Work email",company.work_email);
+  line(card,"Industry",company.industry);
+  line(card,"Website",company.website);
+  line(card,"Description",company.description);
+  const actions=el("div","actions");
+  const approve=el("button","approve","Approve Company");
+  const reject=el("button","reject","Reject");
+  approve.onclick=()=>reviewItem(approve,"company-review",company.id,"approved");
+  reject.onclick=()=>reviewItem(reject,"company-review",company.id,"rejected");
+  actions.append(approve,reject);
+  card.appendChild(actions);
+  box.appendChild(card);
+ });
+}
+function renderOpportunities(items){
+ const box=$("opportunitiesList");
+ box.replaceChildren();
+ $("opportunityCount").textContent=items.length;
+ if(!items.length){
+  box.appendChild(el("div","empty","No pending opportunities."));
+  return;
+ }
+ items.forEach(item=>{
+  const card=el("article","item");
+  const company=Array.isArray(item.companies)?item.companies[0]:item.companies;
+  card.appendChild(el("h3","",item.title||"Untitled opportunity"));
+  card.appendChild(el("span","status","Pending review"));
+  line(card,"Company",company?.company_name);
+  line(card,"Type",item.opportunity_type);
+  line(card,"Location",item.location);
+  line(card,"Description",item.description);
+  line(card,"Application link",item.application_url);
+  const actions=el("div","actions");
+  const publish=el("button","approve","Publish Opportunity");
+  const reject=el("button","reject","Reject");
+  publish.onclick=()=>reviewItem(publish,"opportunity-review",item.id,"published");
+  reject.onclick=()=>reviewItem(reject,"opportunity-review",item.id,"rejected");
+  actions.append(publish,reject);
+  card.appendChild(actions);
+  box.appendChild(card);
+ });
+}
+function renderApplications(items){
+ const box=$("applicationsList");
+ box.replaceChildren();
+ $("applicationCount").textContent=items.length;
+ if(!items.length){
+  box.appendChild(el("div","empty","No student applications have been submitted yet."));
+  return;
+ }
+ items.forEach(app=>{
+  const card=el("article","item");
+  const opportunity=Array.isArray(app.job_opportunities)
+   ?app.job_opportunities[0]:app.job_opportunities;
+  const company=opportunity&&Array.isArray(opportunity.companies)
+   ?opportunity.companies[0]:opportunity?.companies;
+
+  card.appendChild(el("h3","",app.full_name||"Student applicant"));
+  card.appendChild(el("span","status",(app.status||"pending").toUpperCase()));
+  line(card,"Email",app.email);
+  line(card,"Opportunity",opportunity?.title);
+  line(card,"Company",company?.company_name);
+  line(card,"Skills",app.skills);
+  line(card,"Submitted",app.created_at?new Date(app.created_at).toLocaleString():"Not available");
+
+  const label=el("label","","Update application status");
+  label.style.marginTop="16px";
+  const select=el("select","");
+  [
+   ["pending","Pending"],
+   ["reviewed","Reviewed"],
+   ["shortlisted","Shortlisted"],
+   ["accepted","Accepted"],
+   ["rejected","Rejected"]
+  ].forEach(([value,text])=>{
+   const option=el("option","",text);
+   option.value=value;
+   select.appendChild(option);
+  });
+  select.value=app.status||"pending";
+
+  const save=el("button","approve","Save Status");
+  save.style.marginTop="12px";
+  save.onclick=()=>reviewItem(save,"application-review",app.id,select.value);
+
+  card.append(label,select,document.createElement("br"),save);
+  box.appendChild(card);
+ });
+}
+async function loadDashboard(){
+ clearMessage($("dashboardMessage"));
+ $("companiesList").replaceChildren(el("div","loading","Loading companies..."));
+ $("opportunitiesList").replaceChildren(el("div","loading","Loading opportunities..."));
+ $("applicationsList").replaceChildren(el("div","loading","Loading applications..."));
+
+ try{
+  const data=await callAdmin("list");
+  renderCompanies(data.companies||[]);
+  renderOpportunities(data.opportunities||[]);
+  renderApplications(data.applications||[]);
+ }catch(error){
+  message($("dashboardMessage"),error.message);
+  $("companiesList").replaceChildren(el("div","empty","Unable to load companies."));
+  $("opportunitiesList").replaceChildren(el("div","empty","Unable to load opportunities."));
+  $("applicationsList").replaceChildren(el("div","empty","Unable to load applications."));
+ }
+}
+
+$("loginForm").addEventListener("submit",async event=>{
+ event.preventDefault();
+ clearMessage($("loginMessage"));
+ $("loginButton").disabled=true;
+ $("loginButton").textContent="Signing in...";
+
+ try{
+  const {data,error}=await client.auth.signInWithPassword({
+   email:$("email").value.trim(),
+   password:$("password").value
+  });
+  if(error)throw error;
+  $("adminEmail").textContent=data.user?.email||"Administrator";
+  showDashboard();
+  await loadDashboard();
+ }catch(error){
+  message($("loginMessage"),error.message||"Unable to sign in.");
+ }finally{
+  $("loginButton").disabled=false;
+  $("loginButton").textContent="Sign In to Admin Centre";
+ }
+});
+
+$("refreshButton").addEventListener("click",loadDashboard);
+
+$("logoutButton").addEventListener("click",async()=>{
+ await client.auth.signOut();
+ showLogin();
+});
+
+async function startApp(){
+ const {data}=await client.auth.getSession();
+ if(data.session){
+  $("adminEmail").textContent=data.session.user.email||"Administrator";
+  showDashboard();
+  await loadDashboard();
+ }else{
+  showLogin();
+ }
+}
+startApp();
+</script>
+</body>
+</html>
