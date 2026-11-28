@@ -1,0 +1,1218 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Learning Academy | Talent Bridge</title>
+<meta name="description" content="Build practical digital, creative and professional skills with Talent Bridge. Discover learning resources and prepare for global opportunities.">
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+:root {
+  --ocean: #19364A;
+  --midnight: #263D50;
+  --gold: #E7B978;
+  --teal: #80AAA1;
+  --ivory: #FAF7F0;
+  --white: #FFFFFF;
+  --muted: #647785;
+  --line: rgba(25,54,74,.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  color: var(--ocean);
+  background: var(--ivory);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* NAVIGATION */
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  padding: 17px 6%;
+  background: rgba(250,247,240,.94);
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--ocean);
+  letter-spacing: -1px;
+  white-space: nowrap;
+}
+
+.logo span {
+  color: #B68A4C;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+}
+
+.nav-links a {
+  color: var(--ocean);
+  font-size: 13px;
+  font-weight: 700;
+  transition: .3s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: #B68A4C;
+}
+
+.primary-button,
+.light-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 23px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 800;
+  transition: .3s;
+}
+
+.primary-button {
+  background: var(--ocean);
+  color: white;
+  box-shadow: 0 8px 20px rgba(25,54,74,.14);
+}
+
+.primary-button:hover {
+  background: #31566C;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(25,54,74,.2);
+}
+
+.light-button {
+  background: var(--ivory);
+  color: var(--ocean);
+}
+
+.light-button:hover {
+  background: var(--gold);
+  transform: translateY(-3px);
+}
+
+/* HERO */
+
+.courses-hero {
+  position: relative;
+  min-height: 560px;
+  padding: 100px 8% 75px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 85% 20%, rgba(128,170,161,.28), transparent 28%),
+    radial-gradient(circle at 12% 85%, rgba(231,185,120,.16), transparent 30%),
+    linear-gradient(125deg, #142F42, #263D50 65%, #19364A);
+  color: white;
+}
+
+.courses-hero::before,
+.courses-hero::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.courses-hero::before {
+  inset: 0;
+  opacity: .55;
+  background-image:
+    radial-gradient(2px 2px at 15% 20%, white 50%, transparent 100%),
+    radial-gradient(2px 2px at 70% 30%, #E7B978 50%, transparent 100%),
+    radial-gradient(3px 3px at 85% 75%, white 50%, transparent 100%),
+    radial-gradient(2px 2px at 45% 80%, #80AAA1 50%, transparent 100%),
+    radial-gradient(2px 2px at 92% 15%, white 50%, transparent 100%);
+  background-size: 240px 220px;
+  animation: starDrift 18s linear infinite;
+}
+
+.courses-hero::after {
+  width: 380px;
+  height: 380px;
+  right: 8%;
+  top: 80px;
+  border: 1px solid rgba(231,185,120,.22);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 35px rgba(231,185,120,.035),
+    0 0 0 75px rgba(128,170,161,.035);
+  animation: orbit 24s linear infinite;
+}
+
+@keyframes starDrift {
+  from { background-position: 0 0; }
+  to { background-position: 240px 220px; }
+}
+
+@keyframes orbit {
+  to { transform: rotate(360deg); }
+}
+
+.eyebrow {
+  color: #D9B77D;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 3px;
+  margin-bottom: 18px;
+}
+
+.courses-hero h1 {
+  max-width: 780px;
+  font-size: clamp(42px, 6vw, 76px);
+  line-height: 1.08;
+  letter-spacing: -3px;
+  margin: 0 0 22px;
+  color: white;
+}
+
+.courses-hero h1 span {
+  color: var(--gold);
+}
+
+.courses-hero > p:not(.eyebrow) {
+  max-width: 560px;
+  color: rgba(255,255,255,.78);
+  font-size: 16px;
+  line-height: 1.9;
+  margin-bottom: 28px;
+}
+
+.hero-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 13px;
+}
+
+.hero-buttons .primary-button {
+  background: var(--gold);
+  color: var(--ocean);
+}
+
+.hero-buttons .primary-button:hover {
+  background: white;
+}
+
+.hero-secondary {
+  border: 1px solid rgba(255,255,255,.35);
+  color: white;
+  padding: 14px 22px;
+  border-radius: 9px;
+  font-weight: 700;
+  font-size: 13px;
+  transition: .3s;
+}
+
+.hero-secondary:hover {
+  background: rgba(255,255,255,.12);
+}
+
+/* HERO STATS */
+
+.course-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 190px));
+  gap: 30px;
+  margin-top: 65px;
+  max-width: 650px;
+}
+
+.course-stats div {
+  border-left: 2px solid var(--gold);
+  padding-left: 15px;
+}
+
+.course-stats strong {
+  display: block;
+  color: var(--gold);
+  font-size: 26px;
+  margin-bottom: 7px;
+}
+
+.course-stats span {
+  color: rgba(255,255,255,.7);
+  font-size: 12px;
+}
+
+/* GENERAL SECTIONS */
+
+.section {
+  padding: 85px 7%;
+}
+
+.section-heading {
+  max-width: 680px;
+  margin: 0 auto 45px;
+  text-align: center;
+}
+
+.section-heading h2 {
+  font-size: clamp(29px, 4vw, 43px);
+  line-height: 1.2;
+  letter-spacing: -1.5px;
+  margin: 0 0 14px;
+  color: var(--ocean);
+}
+
+.section-heading > p:last-child {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+/* LEARNING JOURNEY */
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 23px;
+  max-width: 1150px;
+  margin: auto;
+}
+
+.feature-card {
+  position: relative;
+  padding: 30px;
+  background: white;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  transition: .35s;
+  overflow: hidden;
+}
+
+.feature-card::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 4px;
+  background: var(--gold);
+  transition: .4s;
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 18px 40px rgba(25,54,74,.1);
+}
+
+.feature-card:hover::after {
+  width: 100%;
+}
+
+.feature-icon {
+  width: 55px;
+  height: 55px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  background: #F0F3EE;
+  font-size: 25px;
+  margin-bottom: 22px;
+}
+
+.feature-card h3 {
+  font-size: 19px;
+  margin: 0 0 12px;
+}
+
+.feature-card p {
+  color: var(--muted);
+  line-height: 1.8;
+  font-size: 13px;
+  margin: 0;
+}
+
+/* ACADEMY INTRO */
+
+.academy-intro {
+  background: #F0F2EC;
+  padding: 65px 7%;
+}
+
+.academy-inner {
+  max-width: 1100px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 35px;
+}
+
+.academy-inner h2 {
+  font-size: clamp(25px, 3.5vw, 36px);
+  margin: 0 0 12px;
+  letter-spacing: -1px;
+}
+
+.academy-inner p {
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 650px;
+  font-size: 14px;
+}
+
+.academy-label {
+  display: inline-block;
+  background: rgba(128,170,161,.2);
+  color: #315E55;
+  padding: 8px 12px;
+  border-radius: 30px;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+}
+
+/* COURSE CARDS */
+
+.course-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.course-card {
+  background: white;
+  border-radius: 17px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  transition: .35s;
+  box-shadow: 0 5px 18px rgba(25,54,74,.035);
+}
+
+.course-card:hover {
+  transform: translateY(-9px);
+  box-shadow: 0 20px 42px rgba(25,54,74,.12);
+}
+
+.course-art {
+  min-height: 180px;
+  padding: 23px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.course-art::after {
+  content: "";
+  width: 150px;
+  height: 150px;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 50%;
+  position: absolute;
+  right: -30px;
+  bottom: -65px;
+  box-shadow: 0 0 0 22px rgba(255,255,255,.07);
+  transition: .5s;
+}
+
+.course-card:hover .course-art::after {
+  transform: scale(1.25) rotate(20deg);
+}
+
+.course-art span {
+  font-size: 42px;
+  position: relative;
+  z-index: 1;
+}
+
+.course-art small {
+  color: white;
+  font-weight: 900;
+  letter-spacing: 2px;
+  font-size: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+.course-purple {
+  background: linear-gradient(135deg,#294C61,#527D8D);
+}
+
+.course-pink {
+  background: linear-gradient(135deg,#A46E65,#D3A18C);
+}
+
+.course-blue {
+  background: linear-gradient(135deg,#244B63,#658E9E);
+}
+
+.course-orange {
+  background: linear-gradient(135deg,#A77942,#D6B16F);
+}
+
+.course-green {
+  background: linear-gradient(135deg,#426C61,#80AAA1);
+}
+
+.course-dark {
+  background: linear-gradient(135deg,#263D50,#172B3A);
+}
+
+.course-body {
+  padding: 25px;
+}
+
+.course-tag {
+  display: inline-block;
+  color: #54786F;
+  background: #EDF4F0;
+  padding: 7px 10px;
+  border-radius: 30px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 13px;
+}
+
+.course-body h3 {
+  font-size: 19px;
+  margin: 0 0 12px;
+  line-height: 1.35;
+}
+
+.course-body p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--muted);
+  min-height: 70px;
+}
+
+.text-link {
+  display: inline-block;
+  margin-top: 10px;
+  color: #9A713C;
+  font-size: 12px;
+  font-weight: 900;
+  transition: .3s;
+}
+
+.text-link:hover {
+  color: var(--ocean);
+  transform: translateX(4px);
+}
+
+/* TALENT BRIDGE COURSE FUTURE */
+
+.our-academy {
+  padding: 85px 7%;
+  background:
+    radial-gradient(circle at 90% 15%, rgba(128,170,161,.18), transparent 25%),
+    var(--ocean);
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.our-academy-inner {
+  max-width: 1120px;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1.2fr .8fr;
+  align-items: center;
+  gap: 45px;
+}
+
+.our-academy h2 {
+  font-size: clamp(30px, 4vw, 43px);
+  line-height: 1.2;
+  margin: 0 0 18px;
+}
+
+.our-academy p {
+  color: rgba(255,255,255,.75);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.academy-points {
+  display: grid;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.academy-points div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255,255,255,.9);
+  font-size: 13px;
+}
+
+.academy-points span {
+  color: var(--gold);
+  font-size: 18px;
+}
+
+.academy-visual {
+  padding: 32px;
+  border: 1px solid rgba(231,185,120,.35);
+  border-radius: 20px;
+  background: rgba(255,255,255,.055);
+  box-shadow: 0 20px 55px rgba(0,0,0,.13);
+}
+
+.academy-visual .big-icon {
+  font-size: 55px;
+  margin-bottom: 20px;
+}
+
+.academy-visual h3 {
+  color: var(--gold);
+  font-size: 20px;
+  margin: 0 0 12px;
+}
+
+.academy-visual p {
+  font-size: 13px;
+}
+
+/* LEARNING BANNER */
+
+.learning-banner {
+  margin: 75px 7%;
+  padding: 55px;
+  border-radius: 20px;
+  background: linear-gradient(115deg,#E7B978,#F1D8AC);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+  box-shadow: 0 15px 35px rgba(120,91,46,.1);
+}
+
+.learning-banner .eyebrow {
+  color: #795A32;
+}
+
+.learning-banner h2 {
+  font-size: clamp(27px, 4vw, 39px);
+  letter-spacing: -1px;
+  line-height: 1.2;
+  margin: 0 0 13px;
+}
+
+.learning-banner p:not(.eyebrow) {
+  color: #66553E;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* FINAL CTA */
+
+.final-cta {
+  text-align: center;
+  padding: 70px 7% 95px;
+}
+
+.final-cta h2 {
+  font-size: clamp(28px, 4vw, 42px);
+  letter-spacing: -1px;
+  margin-bottom: 15px;
+}
+
+.final-cta p {
+  max-width: 620px;
+  margin: 0 auto 25px;
+  color: var(--muted);
+  line-height: 1.9;
+  font-size: 14px;
+}
+
+/* FOOTER */
+
+.footer {
+  background: #142D3F;
+  color: white;
+  padding: 30px 7%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer p {
+  font-size: 12px;
+  color: rgba(255,255,255,.7);
+}
+
+.footer-links {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  font-size: 12px;
+  color: rgba(255,255,255,.8);
+  transition: .3s;
+}
+
+.footer-links a:hover {
+  color: var(--gold);
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 950px) {
+  .navbar {
+    flex-wrap: wrap;
+  }
+
+  .nav-links {
+    order: 3;
+    width: 100%;
+    overflow-x: auto;
+    padding: 8px 0;
+    gap: 18px;
+  }
+
+  .nav-links a {
+    white-space: nowrap;
+  }
+
+  .course-grid {
+    grid-template-columns: repeat(2,1fr);
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media(max-width: 650px) {
+  .navbar {
+    padding: 14px 5%;
+  }
+
+  .navbar > .primary-button {
+    padding: 11px 13px;
+    font-size: 11px;
+  }
+
+  .logo {
+    font-size: 21px;
+  }
+
+  .courses-hero {
+    min-height: 550px;
+    padding: 75px 7% 55px;
+  }
+
+  .courses-hero h1 {
+    letter-spacing: -2px;
+  }
+
+  .courses-hero::after {
+    width: 230px;
+    height: 230px;
+    right: -100px;
+    top: 50px;
+  }
+
+  .course-stats {
+    grid-template-columns: 1fr;
+    gap: 17px;
+    margin-top: 40px;
+  }
+
+  .course-stats strong {
+    font-size: 20px;
+  }
+
+  .section {
+    padding: 65px 6%;
+  }
+
+  .course-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .course-body p {
+    min-height: auto;
+  }
+
+  .academy-inner,
+  .our-academy-inner {
+    grid-template-columns: 1fr;
+    display: grid;
+  }
+
+  .academy-inner {
+    gap: 15px;
+  }
+
+  .learning-banner {
+    margin: 50px 5%;
+    padding: 30px 23px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .our-academy {
+    padding: 65px 6%;
+  }
+
+  .academy-visual {
+    padding: 25px;
+  }
+
+  .footer {
+    padding: 27px 6%;
+  }
+}
+
+@media(prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+  <a href="index.html" class="logo">Talent<span>Bridge</span></a>
+
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="path.html">Find Your Path</a>
+    <a href="courses.html" class="active">Courses</a>
+    <a href="opportunities.html">Opportunities</a>
+    <a href="talent.html">Talent</a>
+    <a href="companies.html">Companies</a>
+  </nav>
+
+  <a href="#course-list" class="primary-button">Explore Courses →</a>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="page-hero courses-hero">
+
+    <p class="eyebrow">TALENT BRIDGE LEARNING ACADEMY</p>
+
+    <h1>Learn skills.<br><span>Build your future.</span></h1>
+
+    <p>
+      Your next opportunity can begin with what you learn today.
+      Discover valuable skills, practise with purpose and prepare
+      to connect with opportunities around the world.
+    </p>
+
+    <div class="hero-buttons">
+      <a href="#course-list" class="primary-button">
+        Explore Learning Paths →
+      </a>
+
+      <a href="#our-academy" class="hero-secondary">
+        Discover Our Academy
+      </a>
+    </div>
+
+    <div class="course-stats">
+      <div>
+        <strong>01</strong>
+        <span>Discover your interests</span>
+      </div>
+
+      <div>
+        <strong>02</strong>
+        <span>Build practical skills</span>
+      </div>
+
+      <div>
+        <strong>03</strong>
+        <span>Prepare for opportunities</span>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- LEARNING JOURNEY -->
+  <section class="section">
+
+    <div class="section-heading">
+      <p class="eyebrow">YOUR LEARNING JOURNEY</p>
+      <h2>Knowledge opens doors.</h2>
+      <p>
+        You don't need to know everything to get started.
+        Choose an area that interests you, develop your abilities
+        and keep building one step at a time.
+      </p>
+    </div>
+
+    <div class="feature-grid">
+
+      <article class="feature-card">
+        <div class="feature-icon">💻</div>
+        <h3>Digital & Technology</h3>
+        <p>
+          Explore coding, web development, data, technology
+          and essential digital tools.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h3>Creative Skills</h3>
+        <p>
+          Discover graphic design, video editing, writing,
+          storytelling and content creation.
+        </p>
+      </article>
+
+      <article class="feature-card">
+        <div class="feature-icon">📈</div>
+        <h3>Business & Marketing</h3>
+        <p>
+          Learn about branding, entrepreneurship, sales,
+          digital marketing and business development.
+        </p>
+      </article>
+
+    </div>
+
+  </section>
+
+  <!-- ACADEMY INTRO -->
+  <section class="academy-intro">
+
+    <div class="academy-inner">
+
+      <div>
+        <span class="academy-label">LEARN AT YOUR OWN PACE</span>
+
+        <h2>Start where you are. Grow from there.</h2>
+
+        <p>
+          Every great skill begins with curiosity. Explore learning
+          resources, understand the basics and gradually develop
+          the confidence to work on real projects.
+        </p>
+      </div>
+
+      <a href="#course-list" class="primary-button">
+        Find Your Starting Point →
+      </a>
+
+    </div>
+
+  </section>
+
+  <!-- EXISTING LEARNING RESOURCES -->
+  <section class="section" id="course-list">
+
+    <div class="section-heading">
+      <p class="eyebrow">EXPLORE LEARNING RESOURCES</p>
+
+      <h2>What would you like to learn?</h2>
+
+      <p>
+        Explore these external learning platforms as you begin
+        developing your skills. Each resource opens on its own website.
+      </p>
+    </div>
+
+    <div class="course-grid">
+
+      <article class="course-card">
+
+        <div class="course-art course-purple">
+          <span>💻</span>
+          <small>TECHNOLOGY</small>
+        </div>
+
+        <div class="course-body">
+          <span class="course-tag">DIGITAL SKILLS</span>
+
+          <h3>Web Development Basics</h3>
+
+          <p>
+            Understand HTML, CSS and JavaScript while learning
+            how websites are designed and built.
+          </p>
+
+          <a href="https://developer.mozilla.org/en-US/docs/Learn_web_development"
+             target="_blank" rel="noopener noreferrer" class="text-link">
+            Explore free learning →
+          </a>
+        </div>
+
+      </article>
+
+      <article class="course-card">
+
+        <div class="course-art course-pink">
+          <span>🎨</span>
+          <small>CREATIVITY</small>
+        </div>
+
+        <div class="course-body">
+          <span class="course-tag">DESIGN</span>
+
+          <h3>Graphic Design Fundamentals</h3>
+
+          <p>
+            Learn visual communication, colour, typography
+            and essential design principles.
+          </p>
+
+          <a href="https://www.canva.com/designschool/"
+             target="_blank" rel="noopener noreferrer" class="text-link">
+            Explore design lessons →
+          </a>
+        </div>
+
+      </article>
+
+      <article class="course-card">
+
+        <div class="course-art course-blue">
+          <span>📱</span>
+          <small>CONTENT</small>
+        </div>
+
+        <div class="course-body">
+          <span class="course-tag">CREATIVE SKILLS</span>
+
+          <h3>Video Editing</h3>
+
+          <p>
+            Explore editing, storytelling, transitions,
+            sound and creative video production.
+          </p>
+
+          <a href="https://www.blackmagicdesign.com/products/davinciresolve/training"
+             target="_blank" rel="noopener noreferrer" class="text-link">
+            Explore editing training →
+          </a>
+        </div>
+
+      </article>
+
+      <article class="course-card">
+
+        <div class="course-art course-orange">
+          <span>📣</span>
+          <small>MARKETING</small>
+        </div>
+
+        <div class="course-body">
+          <span class="course-tag">BUSINESS</span>
+
+          <h3>Digital Marketing</h3>
+
+          <p>
+            Discover social media strategy, content planning,
+            online promotion and digital marketing.
+          </p>
+
+          <a href="https://skillshop.withgoogle.com/"
+             target="_blank" rel="noopener noreferrer" class="text-link">
+            Explore Google Skillshop →
+          </a>
+        </div>
+
+      </article>
+
+      <article class="course-card">
+
+        <div class="course-art course-green">
+          <span>📊</span>
+          <small>DATA</small>
+        </div>
+
+        <div class="course-body">
+          <span class="course-tag">TECHNOLOGY</span>
+
+          <h3>Data & Problem Solving</h3>
+
+          <p>
+            Start exploring spreadsheets, data literacy,
+            analytical thinking and problem-solving.
+          </p>
+
+          <a href="https://www.khanacademy.org/"
+             target="_blank" rel="noopener noreferrer" class="text-link">
+            Explore free lessons →
+          </a>
+        </div>
+
+      </article>
+
+      <article class="course-card">
+
+        <div class="course-art course-dark">
+          <span>💼</span>
+          <small>CAREER</small>
+        </div>
+
+        <div class="course-body">
+          <span class="course-tag">PROFESSIONAL SKILLS</span>
+
+          <h3>Remote Work Essentials</h3>
+
+          <p>
+            Develop communication, organisation, collaboration
+            and time-management skills.
+          </p>
+
+          <a href="https://www.coursera.org/"
+             target="_blank" rel="noopener noreferrer" class="text-link">
+            Explore learning options →
+          </a>
+        </div>
+
+      </article>
+
+    </div>
+
+  </section>
+
+  <!-- TALENT BRIDGE ACADEMY -->
+  <section class="our-academy" id="our-academy">
+
+    <div class="our-academy-inner">
+
+      <div>
+        <p class="eyebrow">THE TALENT BRIDGE VISION</p>
+
+        <h2>Learning should lead to something bigger.</h2>
+
+        <p>
+          Talent Bridge is building a learning experience that
+          connects knowledge with practical development and
+          career opportunities.
+        </p>
+
+        <div class="academy-points">
+          <div><span>✦</span> Structured learning paths and phases</div>
+          <div><span>✦</span> Practical assignments and projects</div>
+          <div><span>✦</span> Opportunities to build your portfolio</div>
+          <div><span>✦</span> A pathway towards discovering real opportunities</div>
+        </div>
+
+      </div>
+
+      <div class="academy-visual">
+        <div class="big-icon">🚀</div>
+
+        <h3>Learn. Build. Connect. Earn.</h3>
+
+        <p>
+          Our goal is to help people develop useful skills,
+          demonstrate what they can do and connect with
+          companies seeking emerging talent.
+        </p>
+
+        <span class="academy-label">MORE LEARNING EXPERIENCES TO COME</span>
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- LEARNING BANNER -->
+  <section class="learning-banner">
+
+    <div>
+      <p class="eyebrow">YOUR NEXT CHAPTER</p>
+
+      <h2>Learn something today.<br>Build something tomorrow.</h2>
+
+      <p>
+        Turn what you learn into practical projects you can
+        showcase to potential employers and collaborators.
+      </p>
+    </div>
+
+    <a href="talent.html" class="light-button">
+      Explore Talent Profiles →
+    </a>
+
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="final-cta">
+
+    <p class="eyebrow">YOUR FUTURE STARTS WITH ACTION</p>
+
+    <h2>Your skills deserve opportunities.</h2>
+
+    <p>
+      Keep learning, practise consistently and discover how
+      your abilities can connect you to opportunities locally
+      and around the world.
+    </p>
+
+    <a href="opportunities.html" class="primary-button">
+      Explore Opportunities →
+    </a>
+
+  </section>
+
+</main>
+
+<footer class="footer">
+
+  <p>© 2026 Talent Bridge. All rights reserved.</p>
+
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="path.html">Find Your Path</a>
+    <a href="opportunities.html">Opportunities</a>
+    <a href="companies.html">Companies</a>
+  </div>
+
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
